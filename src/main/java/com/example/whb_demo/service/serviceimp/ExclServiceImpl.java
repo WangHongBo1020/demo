@@ -166,6 +166,7 @@ public class ExclServiceImpl implements ExclService {
         List<WmsStockroomMemory>  memoryList = excelServiceDao.correctData(excelListl);
         log.info("memoryList--------:{}", JSONObject.toJSONString(memoryList));
 
+        //根据vin过滤重复数据
         List<WmsStockroomMemory> repetition = excelServiceDao.repetitionRepetitions(memoryList);
         log.info("repetition-----:{}", JSONObject.toJSONString(excelListl));
 
