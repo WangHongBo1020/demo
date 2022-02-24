@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.whb_demo.mapper.ExcelMapper">
+
+
+    <insert id="insertuserData">
+        insert into wms_user(user_id,username,password,email,name,mobile,deleted,enabled,main,
+                             create_user,create_time,tenant_id) values
+        <foreach item="item" collection="list" separator=",">
+            (#{item.userId},#{item.username},#{item.password},#{item.email},#{item.name},#{item.mobile},
+            '0','1','0',now(),#{item.createUser},#{item.tenantId})
+        </foreach>
+    </insert>
+
+    <insert id="insertWmsrole">
+        insert into wms_role (wms_role_id,erp_customer_id,wms_role_name,main,is_deleted,create_time,create_user) values
+        (#{vo.wmsRoleId},#{vo.erpCustomerId},#{vo.wmsRoleName},'0','0',now(),'系统')
+    </insert>
+
+    <insert id="insertWmsuserrole">
+        insert into wms_user_role (user_role_id,user_id,role_id,role_name) values
+        (#{vo.userRoleId},#{vo.userId},#{vo.roleId},#{vo.roleName})
+
+    </insert>
+
+    <insert id="insertmemoryData">
+        insert into wms_stockroom_memory(stockroom_memory_id,company_id,company_name,stockroom_id,
+                                        stockroom_code,stockroom_name,stockroom_partition_id,stockroom_partition_name,
+                                        stockroom_position_id,stockroom_position_code,vin,brand_id,brand_code,brand_name,
+                                        vehicle_model,vehicle_series,vehicle_color,clientele_id,clientele_name,clientele_type,
+                                        stockroom_in_date,stockroom_memory_status,quality_status,stockroom_memory_days,is_deleted,
+                                        create_user,create_time) values
+        <foreach item="item" collection="list" separator=",">
+            (#{item.stockroomMemoryId},#{item.companyId},#{item.companyName},
+            #{item.stockroomId},#{item.stockroomCode},#{item.stockroomName},
+            #{item.stockroomPartitionId},#{item.stockroomPartitionName},#{item.stockroomPositionId},
+            #{item.stockroomPositionCode},#{item.vin},
+            #{item.brandId},#{item.brandCode},#{item.brandName},#{item.vehicleModel},#{item.vehicleSeries},
+            #{item.vehicleColor},#{item.clienteleId},#{item.clienteleName},#{item.clienteleType},
+            #{item.stockroomInDate},'1',#{item.qualityStatus},#{item.stockroomMemoryDays},'0',#{item.createUser},now())
+        </foreach>
+    </insert>
+
+    <select id="getWmsRoleId" resultType="java.lang.String">
+        select wms_role_id as flag from wms_role where wms_role_name = #{name} and is_deleted = '0' limit 1
+    </select>
+
+    <select id="getCompanyId" resultType="java.lang.String">
+        select company_id as companyId from wms_company where company_name = #{name} and is_deleted = '0' limit 1
+    </select>
+
+    <select id="getStockroomidandcode" resultType="com.example.whb_demo.entity.WmsStockroomMemory">
+        select
+        stockroom_id as stockroomId,
+        stockroom_code as stockroomCode
+        from wms_stockroom
+        where stockroom_name = #{vo.stockroomName}
+        and is_deleted = '0'
+        limit 1
+    </select>
+
+    <select id="getClienteleBrandid" resultType="com.example.whb_demo.entity.WmsStockroomMemory">
+        select
+        clientele_id as clienteleId,
+        brand_id as brandId,
+        brand_code as brandCode
+        from wms_client_brand
+        where clientele_name = #{vo.clienteleName}
+        and brand_name = #{vo.brandName}
+        and is_deleted = '0'
+        limit 1
+
+    </select>
+    <select id="getPartitionidData" resultType="com.example.whb_demo.entity.WmsStockroomMemory">
+        select partition_id as stockroomPartitionId,
+               position_id  as stockroomPositionId
+        from wms_stockroom_position
+        where partition_name = #{vo.stockroomPartitionName}
+        and position_code = #{vo.stockroomPositionCode}
+    </select>
+
+
+</mapper>
