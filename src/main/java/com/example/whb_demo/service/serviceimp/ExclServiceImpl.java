@@ -2,26 +2,20 @@ package com.example.whb_demo.service.serviceimp;
 
 import com.alibaba.fastjson.JSONObject;
 import com.example.whb_demo.dao.ExcelServiceDao;
-import com.example.whb_demo.entity.WmsRole;
 import com.example.whb_demo.entity.WmsStockroomMemory;
 import com.example.whb_demo.entity.WmsUser;
-import com.example.whb_demo.entity.WmsUserRole;
 import com.example.whb_demo.mapper.ExcelMapper;
 import com.example.whb_demo.service.ExclService;
 import com.example.whb_demo.utils.ExcelUtil;
-import com.example.whb_demo.utils.IdGenerator;
 import com.example.whb_demo.vo.WmsMemoryExcelVo;
 import com.example.whb_demo.vo.WmsUserExcelVo;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.jar.JarEntry;
 import java.util.stream.Collectors;
 
 /**
@@ -184,7 +178,7 @@ public class ExclServiceImpl implements ExclService {
 
         try {
 
-            int count = excelMapper.insertmemoryData(memoryList);
+            int count = excelMapper.insertmemoryData(repetition);
 
             return count > 0 ? "0" : null;
 

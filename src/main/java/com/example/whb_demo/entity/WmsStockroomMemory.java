@@ -290,6 +290,13 @@ public class WmsStockroomMemory implements Serializable {
     private Date updateTime;
 
     /**
+     * 租户id
+     */
+    @TableField("tenant_id")
+    @ApiModelProperty("租户id")
+    private String tenantId;
+
+    /**
      * 错误信息
      */
     @TableField(exist = false)

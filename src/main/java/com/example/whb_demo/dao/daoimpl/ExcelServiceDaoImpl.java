@@ -1,5 +1,6 @@
 package com.example.whb_demo.dao.daoimpl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.example.whb_demo.dao.ExcelServiceDao;
 import com.example.whb_demo.entity.WmsRole;
 import com.example.whb_demo.entity.WmsStockroomMemory;
@@ -7,12 +8,13 @@ import com.example.whb_demo.entity.WmsUser;
 import com.example.whb_demo.entity.WmsUserRole;
 import com.example.whb_demo.enumo.WmsstockEnum;
 import com.example.whb_demo.mapper.ExcelMapper;
-import com.example.whb_demo.utils.Base64Utils;
 import com.example.whb_demo.utils.IdGenerator;
 import com.example.whb_demo.vo.WmsMemoryExcelVo;
 import com.example.whb_demo.vo.WmsUserExcelVo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -32,6 +34,9 @@ import static com.example.whb_demo.utils.StringUtils.isPhoneNumber;
 @Slf4j
 @Component
 public class ExcelServiceDaoImpl implements ExcelServiceDao {
+
+    @Resource
+    private PasswordEncoder passwordEncoder;
 
     @Resource
     private ExcelMapper excelMapper;
@@ -87,13 +92,18 @@ public class ExcelServiceDaoImpl implements ExcelServiceDao {
 
             wmsUser.setUserId(IdGenerator.getIdStr());
             wmsUser.setUsername(excelVo.getUsername());
-            wmsUser.setPassword(Base64Utils.encrytBase64("cjkj123456"));
+            wmsUser.setPassword(passwordEncoder.encode(password));
+            log.info("getPassword-----:{}", JSONObject.toJSONString(wmsUser.getPassword()));
+
             wmsUser.setEmail(excelVo.getEmail());
             wmsUser.setMobile(excelVo.getMobile());
             wmsUser.setName(excelVo.getName());
             wmsUser.setRole(excelVo.getRole());
             wmsUser.setCreateUser("系统");
             wmsUser.setTenantId("1452572477019402241");
+            wmsUser.setErpCustomerId("1452572477019402241");
+
+            log.info("wmsUser-----:{}", JSONObject.toJSONString(wmsUser));
 
         }
         return wmsUser;
@@ -121,11 +131,13 @@ public class ExcelServiceDaoImpl implements ExcelServiceDao {
 
                 // TODO 根据角色名称去查询角色表wms_role 是否存在，存在的话不用新建主键id,不存在就新建主键id
                 String flag = excelMapper.getWmsRoleId(s);
-
                 //插入wms_role表数据
-                role.setWmsRoleId(StringUtils.isEmpty(flag) ? IdGenerator.getIdStr() : flag);
-                role.setWmsRoleName(s);
-                role.setErpCustomerId("1452572477019402241");
+                if (StringUtils.isEmpty(flag)){
+                    role.setWmsRoleId(IdGenerator.getIdStr());
+                    role.setWmsRoleName(s);
+                    role.setErpCustomerId("1452572477019402241");
+                    int rolecount = excelMapper.insertWmsrole(role);
+                }
 
                 //插入wms_user_role表数据
                 userRole.setUserRoleId(IdGenerator.getIdStr());
@@ -133,11 +145,9 @@ public class ExcelServiceDaoImpl implements ExcelServiceDao {
                 userRole.setRoleId(StringUtils.isEmpty(flag) ? role.getWmsRoleId() : flag);
                 userRole.setRoleName(role.getWmsRoleName());
 
-                int rolecount = excelMapper.insertWmsrole(role);
-
                 int userrolecount = excelMapper.insertWmsuserrole(userRole);
 
-                if (rolecount > 0 && userrolecount > 0) {
+                if (userrolecount > 0) {
 
                     return "1";
                 }
@@ -274,6 +284,7 @@ public class ExcelServiceDaoImpl implements ExcelServiceDao {
                 memory.setVehicleColor(excelVo.getVehicleColor());
                 memory.setStockroomInDate(excelVo.getStockroomInDate());
                 memory.setStockroomMemoryDays(excelVo.getStockroomMemoryDays());
+                memory.setTenantId("1452572477019402241");
                 memory.setCreateUser("系统");
                 memory.setQualityStatus(WmsstockEnum.QualityStatus.getCode(excelVo.getQualityStatus()));
 

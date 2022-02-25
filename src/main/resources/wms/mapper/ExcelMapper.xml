@@ -5,11 +5,11 @@
 
 
     <insert id="insertuserData">
-        insert into wms_user(user_id,username,password,email,name,mobile,deleted,enabled,main,
-                             create_user,create_time,tenant_id) values
+        insert into wms_user(user_id,username,erp_customer_id,password,email,name,mobile,deleted,enabled,main,
+                             create_user,create_time,update_user,update_time,tenant_id) values
         <foreach item="item" collection="list" separator=",">
-            (#{item.userId},#{item.username},#{item.password},#{item.email},#{item.name},#{item.mobile},
-            '0','1','0',now(),#{item.createUser},#{item.tenantId})
+            (#{item.userId},#{item.username},#{item.erpCustomerId},#{item.password},#{item.email},#{item.name},#{item.mobile},
+            '0','1','0',#{item.createUser},now(),#{item.createUser},now(),#{item.tenantId})
         </foreach>
     </insert>
 
@@ -30,7 +30,7 @@
                                         stockroom_position_id,stockroom_position_code,vin,brand_id,brand_code,brand_name,
                                         vehicle_model,vehicle_series,vehicle_color,clientele_id,clientele_name,clientele_type,
                                         stockroom_in_date,stockroom_memory_status,quality_status,stockroom_memory_days,is_deleted,
-                                        create_user,create_time) values
+                                        create_user,create_time,tenant_id) values
         <foreach item="item" collection="list" separator=",">
             (#{item.stockroomMemoryId},#{item.companyId},#{item.companyName},
             #{item.stockroomId},#{item.stockroomCode},#{item.stockroomName},
@@ -38,7 +38,7 @@
             #{item.stockroomPositionCode},#{item.vin},
             #{item.brandId},#{item.brandCode},#{item.brandName},#{item.vehicleModel},#{item.vehicleSeries},
             #{item.vehicleColor},#{item.clienteleId},#{item.clienteleName},#{item.clienteleType},
-            #{item.stockroomInDate},'1',#{item.qualityStatus},#{item.stockroomMemoryDays},'0',#{item.createUser},now())
+            #{item.stockroomInDate},'1',#{item.qualityStatus},#{item.stockroomMemoryDays},'0',#{item.createUser},now(),#{item.tenantId})
         </foreach>
     </insert>
 
@@ -57,6 +57,7 @@
         from wms_stockroom
         where stockroom_name = #{vo.stockroomName}
         and is_deleted = '0'
+        and is_enable = '1'
         limit 1
     </select>
 
