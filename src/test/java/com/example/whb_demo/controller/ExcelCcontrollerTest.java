@@ -2,12 +2,20 @@ package com.example.whb_demo.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.example.whb_demo.utils.Md5Util;
+import com.example.whb_demo.utils.VinUtil;
 import com.example.whb_demo.vo.WmsMemoryExcelVo;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.annotation.Resource;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -18,7 +26,7 @@ class ExcelCcontrollerTest {
     private PasswordEncoder passwordEncoder;
 
     @Test
-    public void jiami(){
+    public void jiami() {
         System.out.println("1");
     }
 
@@ -27,7 +35,7 @@ class ExcelCcontrollerTest {
         String password = Md5Util.getMD5("cjkj123456");
         System.out.println(password);
 
-        String passwords =Md5Util.getMD5(password);
+        String passwords = Md5Util.getMD5(password);
 
         System.out.println(passwords);
     }
@@ -37,27 +45,26 @@ class ExcelCcontrollerTest {
         List<String> list = new ArrayList<>();
         List<String> list1 = new ArrayList<>();
 
-        String role = "开发,测试,产品";
-        String str[] = role.split(",");
+        String role = "韵车系统订单修改审批流程--林娟娟-2022-02-18";
+        String str[] = role.split("-");
         list1.add(role);
         list = Arrays.asList(str);
 
-        for (String s : list1) {
-            String ss = s;
-            System.out.println(ss);
-        }
 
-        for (String s : list) {
+        System.out.println(list.get(0));
+
+
+        /*for (String s : list) {
             String sss = s;
             System.out.println(sss);
         }
 
         System.out.println(list1);
-        System.out.println(list);
+        System.out.println(list);*/
     }
 
     @Test
-    public void  userListstream(){
+    public void userListstream() {
 
         WmsMemoryExcelVo wmsMemoryExcelVo = new WmsMemoryExcelVo();
         wmsMemoryExcelVo.setVin("111");
@@ -120,11 +127,58 @@ class ExcelCcontrollerTest {
     }
 
     @Test
-    public void passwordEncoder(){
+    public void passwordEncoder() {
         String password = "cjkj123456";
 
         String str = passwordEncoder.encode(password);
 
         System.out.println(str);
     }
+
+    @Test
+    public void createSheet() throws IOException {
+        Workbook wb = new HSSFWorkbook();
+        Sheet sheet = wb.createSheet("创建sheet页");
+        Row row = sheet.createRow(0);//创建行
+        Cell cell = row.createCell(0);//创建一个单元格， 第一列
+        cell.setCellValue(1);  //给单元格设置值
+
+        row.createCell(1).setCellValue(1.2); //创建一个单元格，第三列，值为1.2
+        row.createCell(2).setCellValue("这是一个字符串");
+        row.createCell(3).setCellValue(false); //4列 创建一个Boolean类型
+
+        FileOutputStream fileOutputStream = new FileOutputStream("D:\\3.xls");
+        wb.write(fileOutputStream);
+        fileOutputStream.close();
+    }
+
+    @Test
+    public  void isLegalVin() {
+
+        if (VinUtil.isLegalVin("UU6JA69691D713820")){
+            System.out.println("true");
+        }
+
+        if (!VinUtil.isLegalVin("LSGDC82C11S10203O")){
+            System.out.println("flae");
+        }
+
+            /*System.out.println(isLegalVin("UU6JA69691D713820"));
+
+            System.out.println(isLegalVin("LFV3A21K7D4262398"));
+
+            System.out.println(isLegalVin("LFV3A23C793062656"));
+
+            System.out.println(isLegalVin("LSGDC82C11S10203O"));
+
+            System.out.println(isLegalVin("LSGDC82C11S102030"));
+
+            System.out.println(isLegalVin("LSGUD84X2BE041557"));
+
+            System.out.println(isLegalVin("WDDBF4CB2EJ143048"));
+
+            System.out.println(isLegalVin("LFP83ACCXD1D99699"));*/
+
+    }
+
 }

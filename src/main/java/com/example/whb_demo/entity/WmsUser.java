@@ -10,6 +10,7 @@ import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author zpw
@@ -100,5 +101,17 @@ public class WmsUser implements Serializable {
     @TableField(exist = false)
     @ApiModelProperty("角色")
     private String role;
+
+    @TableField(exist = false)
+    @ApiModelProperty("仓库编码")
+    private String stockroomCode;
+
+    @TableField(exist = false)
+    @ApiModelProperty("客户编码")
+    private String clienteleCode;
+
+    @TableField(exist = false)
+    @ApiModelProperty("角色List")
+    private List<String> roleList;
 
 }

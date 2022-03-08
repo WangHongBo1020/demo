@@ -42,6 +42,25 @@
         </foreach>
     </insert>
 
+    <insert id="insertWmsUserStockroom">
+        insert into wms_user_stockroom (id, tenant_id, user_id, stockroom_id, company_id)
+        values
+        <foreach item="item" collection="list" separator=",">
+            (#{item.id},#{item.tenantId},#{item.userId},#{item.stockroomId},#{item.companyId})
+        </foreach>
+    </insert>
+
+    <insert id="insertWmsUserClient">
+        insert into wms_user_client (user_client_id, tenant_id, user_id, clientele_id, clientele_name,
+                                     is_deleted, create_user,create_time)
+        values
+        <foreach item="item" collection="list" separator=",">
+            (#{item.userClientId},#{item.tenantId},#{item.userId},#{item.clienteleId},#{item.clienteleName},
+                '0',#{item.createUser},now())
+        </foreach>
+
+    </insert>
+
     <select id="getWmsRoleId" resultType="java.lang.String">
         select wms_role_id as flag from wms_role where wms_role_name = #{name} and is_deleted = '0' limit 1
     </select>
@@ -73,12 +92,27 @@
         limit 1
 
     </select>
+
     <select id="getPartitionidData" resultType="com.example.whb_demo.entity.WmsStockroomMemory">
         select partition_id as stockroomPartitionId,
                position_id  as stockroomPositionId
         from wms_stockroom_position
         where partition_name = #{vo.stockroomPartitionName}
         and position_code = #{vo.stockroomPositionCode}
+    </select>
+
+    <select id="queryStockroom" resultType="com.example.whb_demo.entity.WmsStockroom">
+        select stockroom_id as stockroomId,c
+               company_id as companyId
+        from wms_stockroom
+        where stockroom_code = #{code}
+        and is_enable = '1'
+        and is_deleted = '0'
+    </select>
+    <select id="queryClient" resultType="com.example.whb_demo.dto.WmsUserClientDto">
+        select clientele_id as clienteleId,clientele_name as clienteleName
+        from wms_client_information
+        where clientele_code = #{code} and is_deleted = '0'
     </select>
 
 

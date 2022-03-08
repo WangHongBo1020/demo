@@ -50,7 +50,9 @@ public class ExclServiceImpl implements ExclService {
         int index = 1;
 
         if (repetition != null && !repetition.isEmpty()) {
+
             for (WmsUserExcelVo excelVo : repetition) {
+
                 index = index + 1;
 
                 List<String> strerror = excelServiceDao.errorNull(excelVo, index);
@@ -74,9 +76,13 @@ public class ExclServiceImpl implements ExclService {
 
             if (userList != null && !userList.isEmpty()) {
 
+                //向wms_user表插入数据
                 int count = excelMapper.insertuserData(userList);
 
                 if (count > 0) {
+
+                    // TODO 向wms用户-角色关联表插入数据，wms角色权限表插入数据，wms用户-仓库关联表
+                    // TODO wms用户-客户关联表插入数据
 
                     String rolecount = excelServiceDao.insertWmsrole(userList);
 

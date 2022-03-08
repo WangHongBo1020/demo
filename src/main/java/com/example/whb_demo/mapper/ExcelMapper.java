@@ -1,9 +1,8 @@
 package com.example.whb_demo.mapper;
 
-import com.example.whb_demo.entity.WmsRole;
-import com.example.whb_demo.entity.WmsStockroomMemory;
-import com.example.whb_demo.entity.WmsUser;
-import com.example.whb_demo.entity.WmsUserRole;
+import com.example.whb_demo.dto.WmsUserClientDto;
+import com.example.whb_demo.dto.WmsUserStockroomDto;
+import com.example.whb_demo.entity.*;
 import com.example.whb_demo.vo.WmsMemoryExcelVo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -38,4 +37,12 @@ public interface ExcelMapper {
     int insertmemoryData(@Param("list") List<WmsStockroomMemory> memoryList);
 
     WmsStockroomMemory getPartitionidData(@Param("vo") WmsMemoryExcelVo excelVo);
+
+    WmsStockroom queryStockroom(@Param("code") String code);
+
+    int insertWmsUserStockroom(@Param("list") List<WmsUserStockroomDto> dtoList);
+
+    WmsUserClientDto queryClient(@Param("code") String s);
+
+    int insertWmsUserClient(@Param("list") List<WmsUserClientDto> dtoList);
 }

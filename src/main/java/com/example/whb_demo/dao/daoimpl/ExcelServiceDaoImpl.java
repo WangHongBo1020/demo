@@ -2,15 +2,15 @@ package com.example.whb_demo.dao.daoimpl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.example.whb_demo.dao.ExcelServiceDao;
-import com.example.whb_demo.entity.WmsRole;
-import com.example.whb_demo.entity.WmsStockroomMemory;
-import com.example.whb_demo.entity.WmsUser;
-import com.example.whb_demo.entity.WmsUserRole;
+import com.example.whb_demo.dto.WmsUserClientDto;
+import com.example.whb_demo.dto.WmsUserStockroomDto;
+import com.example.whb_demo.entity.*;
 import com.example.whb_demo.enumo.WmsstockEnum;
 import com.example.whb_demo.mapper.ExcelMapper;
 import com.example.whb_demo.utils.IdGenerator;
 import com.example.whb_demo.vo.WmsMemoryExcelVo;
 import com.example.whb_demo.vo.WmsUserExcelVo;
+import com.sun.xml.internal.bind.v2.TODO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.annotation.ComponentScan;
@@ -43,8 +43,14 @@ public class ExcelServiceDaoImpl implements ExcelServiceDao {
 
     @Override
     public List<WmsUserExcelVo> repetitionRepetition(List<WmsUserExcelVo> excelListl) {
-        List<WmsUserExcelVo> newList = excelListl.stream().distinct().collect(Collectors.toList());
+
+        //对list数据 根据某个字段去掉重复数据 这里用的根据vin去除重复值，两个结果相同值去最后一条
+        List<WmsUserExcelVo> newList = excelListl.stream().collect(Collectors.collectingAndThen
+                (Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing
+                        (WmsUserExcelVo::getUsername))), ArrayList::new));
+
         return newList;
+
     }
 
     @Override
@@ -55,10 +61,7 @@ public class ExcelServiceDaoImpl implements ExcelServiceDao {
         if (StringUtils.isEmpty(excelVo.getUsername())) {
             error.add(index + "行:登录账户为空");
         }
-        if (StringUtils.isEmpty(excelVo.getEmail())) {
-            error.add(index + "行:邮箱为空");
 
-        }
         if (StringUtils.isEmpty(excelVo.getMobile())) {
             error.add(index + "行:手机号为空");
         }
@@ -71,8 +74,17 @@ public class ExcelServiceDaoImpl implements ExcelServiceDao {
             error.add(index + "行:姓名为空");
 
         }
+
         if (StringUtils.isEmpty(excelVo.getRole())) {
             error.add(index + "行:角色为空");
+        }
+
+        if (StringUtils.isEmpty(excelVo.getStockroomCode())){
+            error.add(index + "行:仓库编码为空");
+        }
+
+        if (StringUtils.isEmpty(excelVo.getClienteleCode())){
+            error.add(index + "行:客户编码为空");
         }
 
         return error;
@@ -86,8 +98,7 @@ public class ExcelServiceDaoImpl implements ExcelServiceDao {
 
         WmsUser wmsUser = new WmsUser();
 
-        if (!StringUtils.isEmpty(excelVo.getUsername()) && !StringUtils.isEmpty(excelVo.getEmail())
-                && !StringUtils.isEmpty(excelVo.getMobile()) && !StringUtils.isEmpty(excelVo.getName())
+        if (!StringUtils.isEmpty(excelVo.getUsername()) && !StringUtils.isEmpty(excelVo.getMobile()) && !StringUtils.isEmpty(excelVo.getName())
                 && !StringUtils.isEmpty(excelVo.getRole())) {
 
             wmsUser.setUserId(IdGenerator.getIdStr());
@@ -95,10 +106,11 @@ public class ExcelServiceDaoImpl implements ExcelServiceDao {
             wmsUser.setPassword(passwordEncoder.encode(password));
             log.info("getPassword-----:{}", JSONObject.toJSONString(wmsUser.getPassword()));
 
-            wmsUser.setEmail(excelVo.getEmail());
             wmsUser.setMobile(excelVo.getMobile());
             wmsUser.setName(excelVo.getName());
             wmsUser.setRole(excelVo.getRole());
+            wmsUser.setStockroomCode(excelVo.getStockroomCode());
+            wmsUser.setClienteleCode(excelVo.getClienteleCode());
             wmsUser.setCreateUser("系统");
             wmsUser.setTenantId("1452572477019402241");
             wmsUser.setErpCustomerId("1452572477019402241");
@@ -106,11 +118,125 @@ public class ExcelServiceDaoImpl implements ExcelServiceDao {
             log.info("wmsUser-----:{}", JSONObject.toJSONString(wmsUser));
 
         }
+
         return wmsUser;
     }
 
+    /**
+     * 向wms用户-角色关联表插入数据，wms角色权限表插入数据，wms用户-仓库关联表
+     * wms用户-客户关联表插入数据
+     * @param userList
+     * @return
+     */
     @Override
     public String insertWmsrole(List<WmsUser> userList) {
+
+        // TODO 向wms用户-角色关联表插入数据，wms角色权限表插入数据
+        int userRolecount = this.insertuserRolecount(userList);
+
+        // TODO 向wms用户-仓库关联表wms_user_stockroom插入数据
+        int userStockroomCount = this.insertuserStockroomCount(userList);
+
+        // TODO 向wms用户-客户关联表wms_user_client插入数据
+        int userClientCount = this.insertuserClientCount(userList);
+
+        if (userRolecount > 0 && userStockroomCount > 0 && userClientCount > 0){
+            return "0";
+        }
+
+        return "";
+    }
+
+
+    private int insertuserClientCount(List<WmsUser> userList) {
+
+        List<WmsUserClientDto> dtoList = new ArrayList<>();
+
+        for (WmsUser user : userList) {
+
+            String code = user.getClienteleCode();
+
+            String str[] = code.split("、");
+
+            List<String> list = Arrays.asList(str);
+
+            List<String> quchong = list.stream().distinct().collect(Collectors.toList());
+
+            for (String s : quchong) {
+                // TODO 根据客户code查询客户表wms_client_information，查询数据是否存在
+                WmsUserClientDto clientDto = excelMapper.queryClient(s);
+
+                if (clientDto != null && StringUtils.isNotBlank(clientDto.getClienteleId())
+                        && StringUtils.isNotBlank(clientDto.getClienteleName())){
+
+                    WmsUserClientDto dto = new WmsUserClientDto();
+
+                    dto.setClienteleId(clientDto.getClienteleId());
+                    dto.setClienteleName(clientDto.getClienteleName());
+                    dto.setTenantTd(user.getTenantId());
+                    dto.setUserId(user.getUserId());
+                    dto.setCreateUser(user.getCreateUser());
+                    dto.setUserClientId(IdGenerator.getIdStr());
+
+                    dtoList.add(dto);
+                }
+            }
+
+        }
+
+        if (dtoList != null && !dtoList.isEmpty()){
+
+            return excelMapper.insertWmsUserClient(dtoList);
+        }
+
+        return 0;
+    }
+
+    private int insertuserStockroomCount(List<WmsUser> userList) {
+
+        List<WmsUserStockroomDto> dtoList = new ArrayList<>();
+        List<String> list = new ArrayList<>();
+
+        for (WmsUser user : userList) {
+
+            String code = user.getStockroomCode();
+
+            String str[] = code.split("、");
+
+            list = Arrays.asList(str);
+
+            List<String> quchong = list.stream().distinct().collect(Collectors.toList());
+
+            for (String s : quchong) {
+
+                WmsStockroom stockroomData = excelMapper.queryStockroom(s);
+                // 根据仓库编码查询仓库表是否存在
+                if (stockroomData != null && StringUtils.isNotBlank(stockroomData.getStockroomId())
+                        && StringUtils.isNotBlank(stockroomData.getCompanyId())){
+
+                    WmsUserStockroomDto stockroomDto = new WmsUserStockroomDto();
+
+                    stockroomDto.setId(IdGenerator.getIdStr());
+                    stockroomDto.setTenantId(user.getTenantId());
+                    stockroomDto.setUserId(user.getUserId());
+                    stockroomDto.setStockroomId(stockroomData.getStockroomId());
+                    stockroomDto.setCompanyId(stockroomData.getCompanyId());
+
+                    dtoList.add(stockroomDto);
+                }
+
+            }
+
+        }
+
+        if (dtoList != null && !dtoList.isEmpty()){
+            return excelMapper.insertWmsUserStockroom(dtoList);
+        }
+
+        return 0;
+    }
+
+    private int insertuserRolecount(List<WmsUser> userList) {
 
         List<String> list = new ArrayList<>();
 
@@ -139,23 +265,24 @@ public class ExcelServiceDaoImpl implements ExcelServiceDao {
                     int rolecount = excelMapper.insertWmsrole(role);
                 }
 
+                // TODO 根据userId查询 wms_user_role表，查看是否存在改用户，存在逻辑删除，再插入
                 //插入wms_user_role表数据
                 userRole.setUserRoleId(IdGenerator.getIdStr());
                 userRole.setUserId(user.getUserId());
                 userRole.setRoleId(StringUtils.isEmpty(flag) ? role.getWmsRoleId() : flag);
                 userRole.setRoleName(role.getWmsRoleName());
 
-                int userrolecount = excelMapper.insertWmsuserrole(userRole);
+                return excelMapper.insertWmsuserrole(userRole);
 
-                if (userrolecount > 0) {
+                /*if (userrolecount > 0) {
 
-                    return "1";
-                }
+                    return 1;
+                }*/
             }
 
         }
 
-        return "";
+        return 0;
     }
 
     @Override
