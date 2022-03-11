@@ -1,6 +1,7 @@
 package com.example.whb_demo.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.example.whb_demo.utils.CheckUtil;
 import com.example.whb_demo.utils.Md5Util;
 import com.example.whb_demo.utils.VinUtil;
 import com.example.whb_demo.vo.WmsMemoryExcelVo;
@@ -16,6 +17,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import javax.annotation.Resource;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -155,11 +158,11 @@ class ExcelCcontrollerTest {
     @Test
     public  void isLegalVin() {
 
-        if (VinUtil.isLegalVin("UU6JA69691D713820")){
+        if (CheckUtil.vinCheck("UU6JA69691D713820")){
             System.out.println("true");
         }
 
-        if (!VinUtil.isLegalVin("LSGDC82C11S10203O")){
+        if (!CheckUtil.vinCheck("LSGDC82C11S10203O")){
             System.out.println("flae");
         }
 
@@ -179,6 +182,37 @@ class ExcelCcontrollerTest {
 
             System.out.println(isLegalVin("LFP83ACCXD1D99699"));*/
 
+    }
+
+    @Test
+    public void StringJSONtoString(){
+        List<String> list = new ArrayList<>();
+
+        String str = "6666";
+        list.add(str);
+        System.out.println(JSONObject.toJSONString(list));
+    }
+
+    @Test
+    public void meMoryDays() throws ParseException {
+
+        SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
+        String ss = "2022-03-10 10:57:38";
+        Date sss = sdf.parse(ss);
+        Date date = new Date();
+        Date stockroomInDate=sdf.parse(sdf.format(sss));
+        date=sdf.parse(sdf.format(date));
+
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(stockroomInDate);
+        long time1 = cal.getTimeInMillis();
+
+        cal.setTime(date);
+
+        long time2 = cal.getTimeInMillis();
+        long between_days=(time2-time1)/(1000*3600*24) + 1;
+
+        System.out.println(between_days);
     }
 
 }

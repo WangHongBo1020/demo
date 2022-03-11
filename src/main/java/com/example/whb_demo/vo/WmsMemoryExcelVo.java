@@ -10,6 +10,7 @@ import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * \* KDA
@@ -107,6 +108,36 @@ public class WmsMemoryExcelVo {
     /**
      * 质量状态：0：无质损，1：有质损
      */
-    @Excel(name = "质量状态",orderNum = "14", width = 20)
+    @Excel(name = "入库质量状态",orderNum = "14", width = 20)
     private String qualityStatus;
+
+    /**
+     * 钥匙数量
+     */
+    @Excel(name = "钥匙数量",orderNum = "15", width = 20)
+    private Integer keyAmount;
+
+    /**
+     * 钥匙是否随车 0：否，1：是
+     */
+    @Excel(name = "钥匙是否随车",orderNum = "16", width = 20)
+    private Integer keyFollow;
+
+    /**
+     * 车牌号
+     */
+    @Excel(name = "车牌号",orderNum = "17", width = 20)
+    private String vehicleNumber;
+    /**
+     * 随车附件
+     */
+    @Excel(name = "随车附件",orderNum = "18", width = 20)
+    private List<String> followBackups;
+
+    /**
+     * 附件说明
+     */
+    @Excel(name = "附件说明",orderNum = "17", width = 20)
+    private String followDescribe;
+
 }

@@ -163,4 +163,60 @@ public interface WmsstockEnum {
         }
 
     }
+
+    enum KeyFollow {
+
+        BSC(0, "不随车"),
+        SC(1, "随车"),
+
+        ;
+
+        private int code;
+
+        private String name;
+
+        KeyFollow(int code, String name) {
+            this.code = code;
+            this.name = name;
+        }
+
+        public static String getName(int code) {
+            if (code >= 0) {
+                for (Enum e : Enum.values()) {
+                    if (e.getCode() == code) {
+                        return e.name;
+                    }
+                }
+            }
+            return null;
+        }
+
+        public static int getCode(String name) {
+            if (name != null && !"".equals(name)) {
+                for (Enum e : Enum.values()) {
+                    if (e.getName().equals(name)) {
+                        return e.code;
+                    }
+                }
+            }
+            return 0;
+        }
+
+        public int getCode() {
+            return code;
+        }
+
+        public void setCode(int code) {
+            this.code = code;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+    }
 }

@@ -1,5 +1,6 @@
 package com.example.whb_demo.entity;
 
+import cn.afterturn.easypoi.excel.annotation.Excel;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -301,6 +302,40 @@ public class WmsStockroomMemory implements Serializable {
      */
     @TableField(exist = false)
     private List<String> error;
+
+    /**
+     * 钥匙数量
+     */
+    @TableField("key_amount")
+    @ApiModelProperty("钥匙数量")
+    private Integer keyAmount;
+
+    /**
+     * 钥匙是否随车 0：否，1：是
+     */
+    @TableField("key_follow")
+    @ApiModelProperty("钥匙是否随车 0：否，1：是")
+    private Integer keyFollow;
+
+    /**
+     * 车牌号
+     */
+    @TableField("vehicle_number")
+    @ApiModelProperty("车牌号")
+    private String vehicleNumber;
+    /**
+     * 随车附件
+     */
+    @TableField("follow_backups")
+    @ApiModelProperty("随车附件")
+    private String followBackups;
+
+    /**
+     * 附件说明
+     */
+    @TableField("follow_describe")
+    @ApiModelProperty("附件说明")
+    private String followDescribe;
 
     @Override
     public String toString() {

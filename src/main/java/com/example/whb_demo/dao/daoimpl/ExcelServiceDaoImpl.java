@@ -10,14 +10,12 @@ import com.example.whb_demo.mapper.ExcelMapper;
 import com.example.whb_demo.utils.IdGenerator;
 import com.example.whb_demo.vo.WmsMemoryExcelVo;
 import com.example.whb_demo.vo.WmsUserExcelVo;
-import com.sun.xml.internal.bind.v2.TODO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-
 import javax.annotation.Resource;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -297,7 +295,7 @@ public class ExcelServiceDaoImpl implements ExcelServiceDao {
 
 
     @Override
-    public List<WmsStockroomMemory> correctData(List<WmsMemoryExcelVo> excelVos) {
+    public List<WmsStockroomMemory> correctData(List<WmsMemoryExcelVo> excelVos) throws Exception {
 
         List<WmsStockroomMemory> insertData = new ArrayList<>();
 
@@ -308,11 +306,10 @@ public class ExcelServiceDaoImpl implements ExcelServiceDao {
 
             if (StringUtils.isNotBlank(excelVo.getVin()) && StringUtils.isNotBlank(excelVo.getCompanyName()) &&
                     StringUtils.isNotBlank(excelVo.getStockroomName()) && StringUtils.isNotBlank(excelVo.getStockroomPartitionName()) &&
-                    StringUtils.isNotBlank(excelVo.getStockroomPositionCode()) && StringUtils.isNotBlank(excelVo.getBrandName()) &&
-                    StringUtils.isNotBlank(excelVo.getVehicleModel()) && StringUtils.isNotBlank(excelVo.getVehicleSeries()) &&
-                    StringUtils.isNotBlank(excelVo.getVehicleColor()) && StringUtils.isNotBlank(excelVo.getClienteleName()) &&
+                    StringUtils.isNotBlank(excelVo.getStockroomPositionCode())
+                    && StringUtils.isNotBlank(excelVo.getBrandName()) && StringUtils.isNotBlank(excelVo.getClienteleName()) &&
                     StringUtils.isNotBlank(excelVo.getClienteleType()) && excelVo.getStockroomInDate() != null &&
-                    StringUtils.isNotBlank(excelVo.getStockroomMemoryDays()) && StringUtils.isNotBlank(excelVo.getQualityStatus())) {
+                    StringUtils.isNotBlank(excelVo.getStockroomMemoryDays()) ) {
 
                 index = index + 1;
 
@@ -352,6 +349,7 @@ public class ExcelServiceDaoImpl implements ExcelServiceDao {
                     errorList.add(index + "行：" + excelVo.getStockroomName() + " 不存在");
                 }
 
+                //查询库区库位
                 WmsStockroomMemory partitionidData = excelMapper.getPartitionidData(excelVo);
                 memory.setStockroomPartitionName(excelVo.getStockroomPartitionName());
                 memory.setStockroomPositionCode(excelVo.getStockroomPositionCode());
@@ -411,9 +409,29 @@ public class ExcelServiceDaoImpl implements ExcelServiceDao {
                 memory.setVehicleColor(excelVo.getVehicleColor());
                 memory.setStockroomInDate(excelVo.getStockroomInDate());
                 memory.setStockroomMemoryDays(excelVo.getStockroomMemoryDays());
+                memory.setKeyAmount(excelVo.getKeyAmount());
+                memory.setFollowDescribe(excelVo.getFollowDescribe());
+                memory.setVehicleNumber(excelVo.getVehicleNumber());
                 memory.setTenantId("1452572477019402241");
                 memory.setCreateUser("系统");
-                memory.setQualityStatus(WmsstockEnum.QualityStatus.getCode(excelVo.getQualityStatus()));
+
+                if (StringUtils.isNotBlank(excelVo.getStockroomMemoryDays())){
+                    memory.setStockroomMemoryDays(excelVo.getStockroomMemoryDays());
+                }else {
+                    memory.setStockroomMemoryDays(meMoryDays(excelVo.getStockroomInDate()));
+                }
+
+                if (excelVo.getFollowBackups() != null && !excelVo.getFollowBackups().isEmpty()){
+                    memory.setFollowBackups(JSONObject.toJSONString(excelVo.getFollowBackups()));
+                }
+
+                if (excelVo.getKeyFollow() != null ){
+                    memory.setKeyFollow(WmsstockEnum.KeyFollow.getCode(String.valueOf(excelVo.getKeyFollow())));
+                }
+
+                if (StringUtils.isNotBlank(excelVo.getQualityStatus())){
+                    memory.setQualityStatus(WmsstockEnum.QualityStatus.getCode(excelVo.getQualityStatus()));
+                }
 
                 if (WmsstockEnum.ClientProfile.getCode(excelVo.getClienteleType()) > 0) {
                     memory.setClienteleType(WmsstockEnum.ClientProfile.getCode(excelVo.getClienteleType()));
@@ -431,6 +449,26 @@ public class ExcelServiceDaoImpl implements ExcelServiceDao {
 
 
         return insertData;
+    }
+
+    private String meMoryDays(Date stockroomInDate) throws Exception {
+
+        SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
+
+        Date date = new Date();
+        stockroomInDate=sdf.parse(sdf.format(stockroomInDate));
+        date=sdf.parse(sdf.format(date));
+
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(stockroomInDate);
+        long time1 = cal.getTimeInMillis();
+
+        cal.setTime(date);
+
+        long time2 = cal.getTimeInMillis();
+        long between_days=(time2-time1)/(1000*3600*24) + 1;
+
+        return String.valueOf(between_days);
     }
 
 
@@ -463,17 +501,6 @@ public class ExcelServiceDaoImpl implements ExcelServiceDao {
             errpr.add(index + "行:品牌名称为空");
         }
 
-        if (StringUtils.isBlank(excelVo.getVehicleModel())) {
-            errpr.add(index + "行:车型为空");
-        }
-
-        if (StringUtils.isBlank(excelVo.getVehicleSeries())) {
-            errpr.add(index + "行:车系为空");
-        }
-
-        if (StringUtils.isBlank(excelVo.getVehicleColor())) {
-            errpr.add(index + "行:车辆颜色为空");
-        }
 
         if (StringUtils.isBlank(excelVo.getClienteleName())) {
             errpr.add(index + "行:客户名称为空");
@@ -487,13 +514,6 @@ public class ExcelServiceDaoImpl implements ExcelServiceDao {
             errpr.add(index + "行:实际入库日期为空");
         }
 
-        if (StringUtils.isBlank(excelVo.getStockroomMemoryDays())) {
-            errpr.add(index + "行:在库天数为空");
-        }
-
-        if (StringUtils.isBlank(excelVo.getQualityStatus())) {
-            errpr.add(index + "行:质量状态为空");
-        }
 
         return errpr;
     }

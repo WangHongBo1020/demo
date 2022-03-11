@@ -30,7 +30,8 @@
                                         stockroom_position_id,stockroom_position_code,vin,brand_id,brand_code,brand_name,
                                         vehicle_model,vehicle_series,vehicle_color,clientele_id,clientele_name,clientele_type,
                                         stockroom_in_date,stockroom_memory_status,quality_status,stockroom_memory_days,is_deleted,
-                                        create_user,create_time,tenant_id) values
+                                        create_user,create_time,tenant_id,key_amount,key_follow,vehicle_number,
+                                        follow_backups,follow_describe) values
         <foreach item="item" collection="list" separator=",">
             (#{item.stockroomMemoryId},#{item.companyId},#{item.companyName},
             #{item.stockroomId},#{item.stockroomCode},#{item.stockroomName},
@@ -38,7 +39,8 @@
             #{item.stockroomPositionCode},#{item.vin},
             #{item.brandId},#{item.brandCode},#{item.brandName},#{item.vehicleModel},#{item.vehicleSeries},
             #{item.vehicleColor},#{item.clienteleId},#{item.clienteleName},#{item.clienteleType},
-            #{item.stockroomInDate},'1',#{item.qualityStatus},#{item.stockroomMemoryDays},'0',#{item.createUser},now(),#{item.tenantId})
+            #{item.stockroomInDate},'1',#{item.qualityStatus},#{item.stockroomMemoryDays},'0',#{item.createUser},now(),#{item.tenantId},
+            #{item.keyAmount},#{item.keyFollow},#{item.vehicleNumber},#{item.followBackups},#{item.followDescribe})
         </foreach>
     </insert>
 
@@ -102,10 +104,10 @@
     </select>
 
     <select id="queryStockroom" resultType="com.example.whb_demo.entity.WmsStockroom">
-        select stockroom_id as stockroomId,c
+        select stockroom_id as stockroomId,
                company_id as companyId
         from wms_stockroom
-        where stockroom_code = #{code}
+        where stockroom_name = #{code}
         and is_enable = '1'
         and is_deleted = '0'
     </select>

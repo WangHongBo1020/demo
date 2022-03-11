@@ -5,6 +5,7 @@ import com.example.whb_demo.entity.WmsUser;
 import com.example.whb_demo.vo.WmsMemoryExcelVo;
 import com.example.whb_demo.vo.WmsUserExcelVo;
 
+import java.text.ParseException;
 import java.util.List;
 
 /**
@@ -29,5 +30,5 @@ public interface ExcelServiceDao {
 
     List<String> errorMemoryNull(WmsMemoryExcelVo excelVo, int index);
 
-    List<WmsStockroomMemory> correctData(List<WmsMemoryExcelVo> excelVo);
+    List<WmsStockroomMemory> correctData(List<WmsMemoryExcelVo> excelVo) throws Exception;
 }
