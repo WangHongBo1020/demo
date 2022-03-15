@@ -19,6 +19,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -211,6 +215,17 @@ class ExcelCcontrollerTest {
 
         long time2 = cal.getTimeInMillis();
         long between_days=(time2-time1)/(1000*3600*24) + 1;
+
+        //TODO 这俩方法jdk8 都可以获取到上个月的时间
+        //获取上一个月时间
+        LocalDateTime startTime = LocalDateTime.now();
+        startTime = startTime.minus(30, ChronoUnit.DAYS);
+        //获取当前时间
+        LocalDate endDate = LocalDate.now();
+        //获取当前时间前一个月时间
+        LocalDate beginDate = endDate.plusMonths(-1);
+
+        System.out.println(startTime);
 
         System.out.println(between_days);
     }

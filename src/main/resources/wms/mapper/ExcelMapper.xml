@@ -31,7 +31,8 @@
                                         vehicle_model,vehicle_series,vehicle_color,clientele_id,clientele_name,clientele_type,
                                         stockroom_in_date,stockroom_memory_status,quality_status,stockroom_memory_days,is_deleted,
                                         create_user,create_time,tenant_id,key_amount,key_follow,vehicle_number,
-                                        follow_backups,follow_describe) values
+                                        follow_backups,follow_describe)
+        values
         <foreach item="item" collection="list" separator=",">
             (#{item.stockroomMemoryId},#{item.companyId},#{item.companyName},
             #{item.stockroomId},#{item.stockroomCode},#{item.stockroomName},
@@ -45,10 +46,10 @@
     </insert>
 
     <insert id="insertWmsUserStockroom">
-        insert into wms_user_stockroom (id, tenant_id, user_id, stockroom_id, company_id)
+        insert into wms_user_stockroom (tenant_id, user_id, stockroom_id, company_id)
         values
         <foreach item="item" collection="list" separator=",">
-            (#{item.id},#{item.tenantId},#{item.userId},#{item.stockroomId},#{item.companyId})
+            (#{item.tenantId},#{item.userId},#{item.stockroomId},#{item.companyId})
         </foreach>
     </insert>
 
@@ -114,7 +115,7 @@
     <select id="queryClient" resultType="com.example.whb_demo.dto.WmsUserClientDto">
         select clientele_id as clienteleId,clientele_name as clienteleName
         from wms_client_information
-        where clientele_code = #{code} and is_deleted = '0'
+        where clientele_code = #{code} and is_deleted = '0' limit 1
     </select>
 
 

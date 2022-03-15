@@ -103,8 +103,8 @@ public class WmsUser implements Serializable {
     private String role;
 
     @TableField(exist = false)
-    @ApiModelProperty("仓库编码")
-    private String stockroomCode;
+    @ApiModelProperty("仓库名称")
+    private String stockroomName;
 
     @TableField(exist = false)
     @ApiModelProperty("客户编码")

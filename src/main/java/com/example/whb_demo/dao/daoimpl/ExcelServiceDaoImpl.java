@@ -77,8 +77,8 @@ public class ExcelServiceDaoImpl implements ExcelServiceDao {
             error.add(index + "行:角色为空");
         }
 
-        if (StringUtils.isEmpty(excelVo.getStockroomCode())){
-            error.add(index + "行:仓库编码为空");
+        if (StringUtils.isEmpty(excelVo.getStockroomName())){
+            error.add(index + "行:仓库名称为空");
         }
 
         if (StringUtils.isEmpty(excelVo.getClienteleCode())){
@@ -107,7 +107,7 @@ public class ExcelServiceDaoImpl implements ExcelServiceDao {
             wmsUser.setMobile(excelVo.getMobile());
             wmsUser.setName(excelVo.getName());
             wmsUser.setRole(excelVo.getRole());
-            wmsUser.setStockroomCode(excelVo.getStockroomCode());
+            wmsUser.setStockroomName(excelVo.getStockroomName());
             wmsUser.setClienteleCode(excelVo.getClienteleCode());
             wmsUser.setCreateUser("系统");
             wmsUser.setTenantId("1452572477019402241");
@@ -171,7 +171,7 @@ public class ExcelServiceDaoImpl implements ExcelServiceDao {
 
                     dto.setClienteleId(clientDto.getClienteleId());
                     dto.setClienteleName(clientDto.getClienteleName());
-                    dto.setTenantTd(user.getTenantId());
+                    dto.setTenantId(user.getTenantId());
                     dto.setUserId(user.getUserId());
                     dto.setCreateUser(user.getCreateUser());
                     dto.setUserClientId(IdGenerator.getIdStr());
@@ -197,7 +197,7 @@ public class ExcelServiceDaoImpl implements ExcelServiceDao {
 
         for (WmsUser user : userList) {
 
-            String code = user.getStockroomCode();
+            String code = user.getStockroomName();
 
             String str[] = code.split("、");
 
@@ -214,7 +214,6 @@ public class ExcelServiceDaoImpl implements ExcelServiceDao {
 
                     WmsUserStockroomDto stockroomDto = new WmsUserStockroomDto();
 
-                    stockroomDto.setId(IdGenerator.getIdStr());
                     stockroomDto.setTenantId(user.getTenantId());
                     stockroomDto.setUserId(user.getUserId());
                     stockroomDto.setStockroomId(stockroomData.getStockroomId());
@@ -297,6 +296,8 @@ public class ExcelServiceDaoImpl implements ExcelServiceDao {
     @Override
     public List<WmsStockroomMemory> correctData(List<WmsMemoryExcelVo> excelVos) throws Exception {
 
+        log.info("correctData----{}",JSONObject.toJSONString(excelVos));
+
         List<WmsStockroomMemory> insertData = new ArrayList<>();
 
         List<String> errorList = new ArrayList<>();
@@ -308,8 +309,7 @@ public class ExcelServiceDaoImpl implements ExcelServiceDao {
                     StringUtils.isNotBlank(excelVo.getStockroomName()) && StringUtils.isNotBlank(excelVo.getStockroomPartitionName()) &&
                     StringUtils.isNotBlank(excelVo.getStockroomPositionCode())
                     && StringUtils.isNotBlank(excelVo.getBrandName()) && StringUtils.isNotBlank(excelVo.getClienteleName()) &&
-                    StringUtils.isNotBlank(excelVo.getClienteleType()) && excelVo.getStockroomInDate() != null &&
-                    StringUtils.isNotBlank(excelVo.getStockroomMemoryDays()) ) {
+                    StringUtils.isNotBlank(excelVo.getClienteleType()) && excelVo.getStockroomInDate() != null ) {
 
                 index = index + 1;
 
@@ -421,12 +421,17 @@ public class ExcelServiceDaoImpl implements ExcelServiceDao {
                     memory.setStockroomMemoryDays(meMoryDays(excelVo.getStockroomInDate()));
                 }
 
-                if (excelVo.getFollowBackups() != null && !excelVo.getFollowBackups().isEmpty()){
-                    memory.setFollowBackups(JSONObject.toJSONString(excelVo.getFollowBackups()));
+                if (StringUtils.isNotBlank(excelVo.getFollowBackups())){
+
+                    List<String> list = new ArrayList<>();
+
+                    list.add(excelVo.getFollowBackups());
+
+                    memory.setFollowBackups(JSONObject.toJSONString(list));
                 }
 
-                if (excelVo.getKeyFollow() != null ){
-                    memory.setKeyFollow(WmsstockEnum.KeyFollow.getCode(String.valueOf(excelVo.getKeyFollow())));
+                if (StringUtils.isNotBlank(excelVo.getKeyFollow())){
+                    memory.setKeyFollow(WmsstockEnum.KeyFollow.getCode(excelVo.getKeyFollow()));
                 }
 
                 if (StringUtils.isNotBlank(excelVo.getQualityStatus())){
@@ -447,6 +452,7 @@ public class ExcelServiceDaoImpl implements ExcelServiceDao {
             }
         }
 
+        log.info("insertData-----:{}",JSONObject.toJSONString(insertData));
 
         return insertData;
     }

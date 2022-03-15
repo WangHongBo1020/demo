@@ -8,10 +8,7 @@ import io.swagger.annotations.ApiOperation;
 import jdk.nashorn.internal.ir.annotations.Ignore;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.Assert;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
@@ -45,7 +42,7 @@ public class ExcelCcontroller {
 
     @ApiOperation(value = "创建库存")
     @PostMapping("/insertmemory")
-    public Result<WmsStockroomMemoryDto, Object> insertmemory(@RequestParam("file") @Ignore MultipartFile file) throws Exception {
+    public Result<WmsStockroomMemoryDto, Object> insertmemory(@RequestBody MultipartFile file) throws Exception {
 
         Assert.notNull(file,"Eexecl不能为空");
         String result = exclService.insertMemoryData(file);

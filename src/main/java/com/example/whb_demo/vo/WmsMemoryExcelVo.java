@@ -121,7 +121,7 @@ public class WmsMemoryExcelVo {
      * 钥匙是否随车 0：否，1：是
      */
     @Excel(name = "钥匙是否随车",orderNum = "16", width = 20)
-    private Integer keyFollow;
+    private String keyFollow;
 
     /**
      * 车牌号
@@ -132,12 +132,12 @@ public class WmsMemoryExcelVo {
      * 随车附件
      */
     @Excel(name = "随车附件",orderNum = "18", width = 20)
-    private List<String> followBackups;
+    private String followBackups;
 
     /**
      * 附件说明
      */
-    @Excel(name = "附件说明",orderNum = "17", width = 20)
+    @Excel(name = "附件说明",orderNum = "19", width = 20)
     private String followDescribe;
 
 }

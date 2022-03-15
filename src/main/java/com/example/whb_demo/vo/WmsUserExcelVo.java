@@ -33,8 +33,8 @@ public class WmsUserExcelVo {
     @Excel(name = "角色名称(多个角色以顿号、分割)",orderNum = "4", width = 20)
     private String role;
 
-    @Excel(name = "仓库编码(多个仓库以顿号、分割)",orderNum = "5", width = 20)
-    private String stockroomCode;
+    @Excel(name = "仓库名称(多个仓库以顿号、分割)",orderNum = "5", width = 20)
+    private String stockroomName;
 
     @Excel(name = "客户编码(多个客户以顿号、分割)",orderNum = "6", width = 20)
     private String clienteleCode;

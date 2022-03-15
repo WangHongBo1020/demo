@@ -23,7 +23,7 @@ public class WmsUserClientDto implements Serializable {
     /**
      *租户ID
      */
-    private String tenantTd;
+    private String tenantId;
     
     /**
      * 用户ID
