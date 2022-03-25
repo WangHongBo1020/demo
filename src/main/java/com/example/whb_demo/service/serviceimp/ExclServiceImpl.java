@@ -10,12 +10,14 @@ import com.example.whb_demo.utils.ExcelUtil;
 import com.example.whb_demo.vo.WmsMemoryExcelVo;
 import com.example.whb_demo.vo.WmsUserExcelVo;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -42,29 +44,30 @@ public class ExclServiceImpl implements ExclService {
         List<WmsUserExcelVo> excelListl = ExcelUtil.importExcel(file, 0, 1, WmsUserExcelVo.class);
         log.info("excelListl-----:{}", JSONObject.toJSONString(excelListl));
 
-        List<WmsUserExcelVo> repetition = excelServiceDao.repetitionRepetition(excelListl);
-
         List<WmsUser> userList = new ArrayList<>();
 
         List<String> error = new ArrayList<>();
         int index = 1;
 
-        if (repetition != null && !repetition.isEmpty()) {
+        if (excelListl != null && !excelListl.isEmpty()) {
 
-            for (WmsUserExcelVo excelVo : repetition) {
+            for (WmsUserExcelVo excelVo : excelListl) {
 
-                index = index + 1;
+                index ++;
 
-                List<String> strerror = excelServiceDao.errorNull(excelVo, index);
+                if (excelVo != null && excelVo.getUsername() != null){
 
-                if (strerror != null && !strerror.isEmpty()) {
-                    error.addAll(strerror);
-                }
+                    List<String> strerror = excelServiceDao.errorNull(excelVo, index);
 
-                WmsUser wmsUser = excelServiceDao.isNotData(excelVo);
+                    if (strerror != null && !strerror.isEmpty()) {
+                        error.addAll(strerror);
+                    }
 
-                if (wmsUser != null) {
-                    userList.add(wmsUser);
+                    WmsUser wmsUser = excelServiceDao.isNotData(excelVo);
+
+                    if (wmsUser != null) {
+                        userList.add(wmsUser);
+                    }
                 }
 
             }
@@ -76,19 +79,19 @@ public class ExclServiceImpl implements ExclService {
 
             if (userList != null && !userList.isEmpty()) {
 
+                List<WmsUser> repetition = excelServiceDao.repetitionRepetition(userList);
+
                 //向wms_user表插入数据
-                int count = excelMapper.insertuserData(userList);
+                int count = excelMapper.insertuserData(repetition);
 
                 if (count > 0) {
 
                     // TODO 向wms用户-角色关联表插入数据，wms角色权限表插入数据，wms用户-仓库关联表
                     // TODO wms用户-客户关联表插入数据
 
-                    String rolecount = excelServiceDao.insertWmsrole(userList);
+                    String rolecount = excelServiceDao.insertWmsrole(repetition);
 
-                    if (!"".equals(rolecount)) {
-                        return "0";
-                    }
+                    return !"".equals(rolecount) ? "0" : null;
 
                 }
 
@@ -116,7 +119,7 @@ public class ExclServiceImpl implements ExclService {
 
         for (WmsMemoryExcelVo excelVo : excelListl) {
 
-            index = index + 1;
+            index++;
 
             List<String> strerror = excelServiceDao.errorMemoryNull(excelVo, index);
 
@@ -140,10 +143,10 @@ public class ExclServiceImpl implements ExclService {
 
         //根据仓库,库区,库位查询是否存在重复值
         List<WmsMemoryExcelVo> list = gressionList.stream()
-                .collect(Collectors.toMap(e -> e, e -> 1, (a, b) -> a + b))
+                .collect(Collectors.toMap(e -> e, e -> 1, Integer::sum))
                 .entrySet().stream()
                 .filter(entry -> entry.getValue() > 1)
-                .map(entry -> entry.getKey())
+                .map(Map.Entry::getKey)
                 .collect(Collectors.toList());
 
         if (list != null && !list.isEmpty()){

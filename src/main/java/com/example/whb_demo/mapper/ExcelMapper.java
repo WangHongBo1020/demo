@@ -36,13 +36,15 @@ public interface ExcelMapper {
 
     int insertmemoryData(@Param("list") List<WmsStockroomMemory> memoryList);
 
-    WmsStockroomMemory getPartitionidData(@Param("vo") WmsMemoryExcelVo excelVo);
+    WmsStockroomMemory getPartitionidData(@Param("vo") WmsMemoryExcelVo excelVo,
+                                          @Param("stockroomId")String stockroomId);
 
-    WmsStockroom queryStockroom(@Param("code") String code);
+    WmsStockroom queryStockroom(@Param("code") String code,@Param("id")String id);
 
     int insertWmsUserStockroom(@Param("list") List<WmsUserStockroomDto> dtoList);
 
-    WmsUserClientDto queryClient(@Param("code") String s);
+    WmsUserClientDto queryClient(@Param("code") String s,@Param("id")String id);
 
     int insertWmsUserClient(@Param("list") List<WmsUserClientDto> dtoList);
+
 }

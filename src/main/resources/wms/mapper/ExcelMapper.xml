@@ -15,7 +15,7 @@
 
     <insert id="insertWmsrole">
         insert into wms_role (wms_role_id,erp_customer_id,wms_role_name,main,is_deleted,create_time,create_user) values
-        (#{vo.wmsRoleId},#{vo.erpCustomerId},#{vo.wmsRoleName},'0','0',now(),'系统')
+        (#{vo.wmsRoleId},#{vo.erpCustomerId},#{vo.wmsRoleName},'0','0',now(),'长久物流股份有限公司')
     </insert>
 
     <insert id="insertWmsuserrole">
@@ -102,6 +102,7 @@
         from wms_stockroom_position
         where partition_name = #{vo.stockroomPartitionName}
         and position_code = #{vo.stockroomPositionCode}
+        and stockroom_id = #{stockroomId}
     </select>
 
     <select id="queryStockroom" resultType="com.example.whb_demo.entity.WmsStockroom">
@@ -109,13 +110,15 @@
                company_id as companyId
         from wms_stockroom
         where stockroom_name = #{code}
+        and tenant_id = #{id}
         and is_enable = '1'
         and is_deleted = '0'
     </select>
+
     <select id="queryClient" resultType="com.example.whb_demo.dto.WmsUserClientDto">
         select clientele_id as clienteleId,clientele_name as clienteleName
         from wms_client_information
-        where clientele_code = #{code} and is_deleted = '0' limit 1
+        where clientele_name = #{code} and tenant_id = #{id} and is_deleted = '0' limit 1
     </select>
 
 

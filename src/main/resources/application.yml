@@ -10,10 +10,12 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     #url: jdbc:mysql:://@10.253.96.66:3306/cjwl_wms_dev
-    url: jdbc:mysql://@10.253.96.66:3306/cjwl_wms_dev?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&useAffectedRows=true&allowMultiQueries=true
+    #url: jdbc:mysql://@10.253.96.66:3306/cjwl_wms_dev?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&useAffectedRows=true&allowMultiQueries=true
+    url: jdbc:mysql://@10.0.106.34:3306/cjwl_wms?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&useAffectedRows=true&allowMultiQueries=true
     #url: jdbc:oracle:thin:@10.8.199.144:1521/intdbnew
     username: root
-    password: CjK1rry1as
+    #password: CjK1rry1as
+    password: Qaz123$%^
 
 mybatis:
   configuration:

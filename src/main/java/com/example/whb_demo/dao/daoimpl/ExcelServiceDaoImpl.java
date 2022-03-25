@@ -40,12 +40,12 @@ public class ExcelServiceDaoImpl implements ExcelServiceDao {
     private ExcelMapper excelMapper;
 
     @Override
-    public List<WmsUserExcelVo> repetitionRepetition(List<WmsUserExcelVo> excelListl) {
+    public List<WmsUser> repetitionRepetition(List<WmsUser> excelListl) {
 
         //对list数据 根据某个字段去掉重复数据 这里用的根据vin去除重复值，两个结果相同值去最后一条
-        List<WmsUserExcelVo> newList = excelListl.stream().collect(Collectors.collectingAndThen
+        List<WmsUser> newList = excelListl.stream().collect(Collectors.collectingAndThen
                 (Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing
-                        (WmsUserExcelVo::getUsername))), ArrayList::new));
+                        (WmsUser::getUsername))), ArrayList::new));
 
         return newList;
 
@@ -109,9 +109,9 @@ public class ExcelServiceDaoImpl implements ExcelServiceDao {
             wmsUser.setRole(excelVo.getRole());
             wmsUser.setStockroomName(excelVo.getStockroomName());
             wmsUser.setClienteleCode(excelVo.getClienteleCode());
-            wmsUser.setCreateUser("系统");
-            wmsUser.setTenantId("1452572477019402241");
-            wmsUser.setErpCustomerId("1452572477019402241");
+            wmsUser.setCreateUser("长久物流股份有限公司");
+            wmsUser.setTenantId("1504279855028072450");
+            wmsUser.setErpCustomerId("1504279855028072450");
 
             log.info("wmsUser-----:{}", JSONObject.toJSONString(wmsUser));
 
@@ -162,7 +162,7 @@ public class ExcelServiceDaoImpl implements ExcelServiceDao {
 
             for (String s : quchong) {
                 // TODO 根据客户code查询客户表wms_client_information，查询数据是否存在
-                WmsUserClientDto clientDto = excelMapper.queryClient(s);
+                WmsUserClientDto clientDto = excelMapper.queryClient(s,user.getTenantId());
 
                 if (clientDto != null && StringUtils.isNotBlank(clientDto.getClienteleId())
                         && StringUtils.isNotBlank(clientDto.getClienteleName())){
@@ -207,7 +207,7 @@ public class ExcelServiceDaoImpl implements ExcelServiceDao {
 
             for (String s : quchong) {
 
-                WmsStockroom stockroomData = excelMapper.queryStockroom(s);
+                WmsStockroom stockroomData = excelMapper.queryStockroom(s,user.getTenantId());
                 // 根据仓库编码查询仓库表是否存在
                 if (stockroomData != null && StringUtils.isNotBlank(stockroomData.getStockroomId())
                         && StringUtils.isNotBlank(stockroomData.getCompanyId())){
@@ -237,6 +237,7 @@ public class ExcelServiceDaoImpl implements ExcelServiceDao {
 
         List<String> list = new ArrayList<>();
 
+        int userRolecount = 0;
         for (WmsUser user : userList) {
 
             WmsRole role = new WmsRole();
@@ -250,15 +251,15 @@ public class ExcelServiceDaoImpl implements ExcelServiceDao {
 
             List<String> quchong = list.stream().distinct().collect(Collectors.toList());
 
-            for (String s : quchong) {
+            for (String name : quchong) {
 
                 // TODO 根据角色名称去查询角色表wms_role 是否存在，存在的话不用新建主键id,不存在就新建主键id
-                String flag = excelMapper.getWmsRoleId(s);
+                String flag = excelMapper.getWmsRoleId(name);
                 //插入wms_role表数据
-                if (StringUtils.isEmpty(flag)){
+                if (StringUtils.isEmpty(flag)) {
                     role.setWmsRoleId(IdGenerator.getIdStr());
-                    role.setWmsRoleName(s);
-                    role.setErpCustomerId("1452572477019402241");
+                    role.setWmsRoleName(name);
+                    role.setErpCustomerId("1504279855028072450");
                     int rolecount = excelMapper.insertWmsrole(role);
                 }
 
@@ -267,9 +268,9 @@ public class ExcelServiceDaoImpl implements ExcelServiceDao {
                 userRole.setUserRoleId(IdGenerator.getIdStr());
                 userRole.setUserId(user.getUserId());
                 userRole.setRoleId(StringUtils.isEmpty(flag) ? role.getWmsRoleId() : flag);
-                userRole.setRoleName(role.getWmsRoleName());
+                userRole.setRoleName(name);
 
-                return excelMapper.insertWmsuserrole(userRole);
+                userRolecount += excelMapper.insertWmsuserrole(userRole);
 
                 /*if (userrolecount > 0) {
 
@@ -279,7 +280,7 @@ public class ExcelServiceDaoImpl implements ExcelServiceDao {
 
         }
 
-        return 0;
+        return Math.max(userRolecount, 0);
     }
 
     @Override
@@ -309,9 +310,9 @@ public class ExcelServiceDaoImpl implements ExcelServiceDao {
                     StringUtils.isNotBlank(excelVo.getStockroomName()) && StringUtils.isNotBlank(excelVo.getStockroomPartitionName()) &&
                     StringUtils.isNotBlank(excelVo.getStockroomPositionCode())
                     && StringUtils.isNotBlank(excelVo.getBrandName()) && StringUtils.isNotBlank(excelVo.getClienteleName()) &&
-                    StringUtils.isNotBlank(excelVo.getClienteleType()) && excelVo.getStockroomInDate() != null ) {
+                    StringUtils.isNotBlank(excelVo.getClienteleType()) && excelVo.getStockroomInDate() != null) {
 
-                index = index + 1;
+                index++;
 
                 WmsStockroomMemory memory = new WmsStockroomMemory();
                 memory.setVin(excelVo.getVin());
@@ -350,7 +351,7 @@ public class ExcelServiceDaoImpl implements ExcelServiceDao {
                 }
 
                 //查询库区库位
-                WmsStockroomMemory partitionidData = excelMapper.getPartitionidData(excelVo);
+                WmsStockroomMemory partitionidData = excelMapper.getPartitionidData(excelVo,stockroomidData.getStockroomId());
                 memory.setStockroomPartitionName(excelVo.getStockroomPartitionName());
                 memory.setStockroomPositionCode(excelVo.getStockroomPositionCode());
 
@@ -404,24 +405,41 @@ public class ExcelServiceDaoImpl implements ExcelServiceDao {
                 }
 
                 memory.setStockroomMemoryId(IdGenerator.getIdStr());
-                memory.setVehicleModel(excelVo.getVehicleModel());
-                memory.setVehicleSeries(excelVo.getVehicleSeries());
-                memory.setVehicleColor(excelVo.getVehicleColor());
+
+                if (StringUtils.isNotBlank(excelVo.getVehicleModel())){
+                    memory.setVehicleModel(excelVo.getVehicleModel());
+
+                } else{
+                    memory.setVehicleModel("");
+                }
+
+                if (StringUtils.isNotBlank(excelVo.getVehicleSeries())){
+                    memory.setVehicleSeries(excelVo.getVehicleSeries());
+
+                } else{
+                    memory.setVehicleSeries("");
+                }
+
+                if (StringUtils.isNotBlank(excelVo.getVehicleColor())){
+                    memory.setVehicleColor(excelVo.getVehicleColor());
+
+                } else{
+                    memory.setVehicleColor("");
+                }
                 memory.setStockroomInDate(excelVo.getStockroomInDate());
-                memory.setStockroomMemoryDays(excelVo.getStockroomMemoryDays());
                 memory.setKeyAmount(excelVo.getKeyAmount());
                 memory.setFollowDescribe(excelVo.getFollowDescribe());
                 memory.setVehicleNumber(excelVo.getVehicleNumber());
-                memory.setTenantId("1452572477019402241");
-                memory.setCreateUser("系统");
+                memory.setTenantId("1504279855028072450");
+                memory.setCreateUser("长久物流股份有限公司");
 
-                if (StringUtils.isNotBlank(excelVo.getStockroomMemoryDays())){
+                if (StringUtils.isNotBlank(excelVo.getStockroomMemoryDays())) {
                     memory.setStockroomMemoryDays(excelVo.getStockroomMemoryDays());
-                }else {
+                } else {
                     memory.setStockroomMemoryDays(meMoryDays(excelVo.getStockroomInDate()));
                 }
 
-                if (StringUtils.isNotBlank(excelVo.getFollowBackups())){
+                if (StringUtils.isNotBlank(excelVo.getFollowBackups())) {
 
                     List<String> list = new ArrayList<>();
 
@@ -430,11 +448,11 @@ public class ExcelServiceDaoImpl implements ExcelServiceDao {
                     memory.setFollowBackups(JSONObject.toJSONString(list));
                 }
 
-                if (StringUtils.isNotBlank(excelVo.getKeyFollow())){
+                if (StringUtils.isNotBlank(excelVo.getKeyFollow())) {
                     memory.setKeyFollow(WmsstockEnum.KeyFollow.getCode(excelVo.getKeyFollow()));
                 }
 
-                if (StringUtils.isNotBlank(excelVo.getQualityStatus())){
+                if (StringUtils.isNotBlank(excelVo.getQualityStatus())) {
                     memory.setQualityStatus(WmsstockEnum.QualityStatus.getCode(excelVo.getQualityStatus()));
                 }
 

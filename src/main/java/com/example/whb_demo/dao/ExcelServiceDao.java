@@ -18,7 +18,7 @@ import java.util.List;
  */
 public interface ExcelServiceDao {
 
-    List<WmsUserExcelVo> repetitionRepetition(List<WmsUserExcelVo> excelListl);
+    List<WmsUser> repetitionRepetition(List<WmsUser> excelListl);
 
     List<String> errorNull(WmsUserExcelVo excelVo, int index);
 
