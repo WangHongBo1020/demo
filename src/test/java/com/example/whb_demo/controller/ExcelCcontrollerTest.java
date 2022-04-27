@@ -1,6 +1,7 @@
 package com.example.whb_demo.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.example.whb_demo.entity.WmsUser;
 import com.example.whb_demo.utils.CheckUtil;
 import com.example.whb_demo.utils.Md5Util;
 import com.example.whb_demo.utils.VinUtil;
@@ -11,6 +12,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.BeanUtils;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -22,6 +24,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -200,6 +203,13 @@ class ExcelCcontrollerTest {
     @Test
     public void meMoryDays() throws ParseException {
 
+        //JDK8 时间格式化
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+        System.out.println(LocalDate.now().format(formatter));
+        //JDK8 时间格式化
+
+
         SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
         String ss = "2022-03-10 10:57:38";
         Date sss = sdf.parse(ss);
@@ -219,7 +229,9 @@ class ExcelCcontrollerTest {
         //TODO 这俩方法jdk8 都可以获取到上个月的时间
         //获取上一个月时间
         LocalDateTime startTime = LocalDateTime.now();
-        startTime = startTime.minus(30, ChronoUnit.DAYS);
+        startTime = startTime.minus(90, ChronoUnit.DAYS);
+        startTime = startTime.plusDays(+1);
+
         //获取当前时间
         LocalDate endDate = LocalDate.now();
         //获取当前时间前一个月时间
@@ -230,4 +242,69 @@ class ExcelCcontrollerTest {
         System.out.println(between_days);
     }
 
+
+    /**
+     * 将list转成map 然后可以用key做判断
+     * Map<String, WmsUserClient> clientMap  = userClientList.stream().
+     * collect(Collectors.toMap(WmsUserClient::getClienteleId, x->x ));
+     *
+     * WmsUserClient client = clientMap.get(carData.getClienteleId());
+     */
+
+
+
+
+    @Test
+    public  void maopaopaixu(){
+        int[] array = new int[]{5,8,6,3,9,2,1,7};
+        sort(array);
+        System.out.println(Arrays.toString(array));
+    }
+
+
+    private  void sort(int array[]) {
+        int tmp = 0;
+        for (int i = 0; i < array.length; i++) {
+            //有序标记，每一轮的初始是true
+            boolean isSorted = true;
+            for (int j = 0; j < array.length - i - 1; j++) {
+                if (array[j] > array[j + 1]) {
+                    tmp = array[j];
+                    array[j] = array[j + 1];
+                    array[j + 1] = tmp;
+                    //有元素交换，所以不是有序，标记变为false
+                    isSorted = false;
+                }
+            }
+            if (isSorted) {
+                break;
+            }
+        }
+    }
+
+
+    // TODO JDBC 链接上数据库sql编写
+    //  PreparedStatement stmt = connection.prepareStatement("这里写sql语句")：
+    //  按照类型赋值，这里使用的 long类型 stmt.setLong(1, requestId)：
+    //  ResultSet rs = stmt.executeQuery() 注入sql;
+
+    @Test
+    public void BeanUtils(){
+
+        // TODO  BeanUtils.copyProperties(a,b);
+        //  BeanUtils.mcopyProperties注：如果User和UserActionForm 间存在名称不相同的属性，
+        //  则BeanUtils不对这些属性进行处理，需要手动处理。例如User类里面有个StockroomName 创建时间字段，
+        //  而UserActionForm里面无此字段。BeanUtils.copyProperties()不会对此字段做任何处理。必须要自己手动处理;：
+
+        WmsUser user = new WmsUser();
+
+        user.setStockroomName("1233");
+
+        WmsUser wmsUser = new WmsUser();
+
+        BeanUtils.copyProperties(user,wmsUser);
+        System.out.println(wmsUser);
+    }
+
 }
+

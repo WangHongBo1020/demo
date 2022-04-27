@@ -426,6 +426,7 @@ public class ExcelServiceDaoImpl implements ExcelServiceDao {
                 } else{
                     memory.setVehicleColor("");
                 }
+
                 memory.setStockroomInDate(excelVo.getStockroomInDate());
                 memory.setKeyAmount(excelVo.getKeyAmount());
                 memory.setFollowDescribe(excelVo.getFollowDescribe());
