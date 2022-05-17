@@ -1,6 +1,7 @@
 package com.example.whb_demo.dao.daoimpl;
 
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.example.whb_demo.dao.ExcelServiceDao;
 import com.example.whb_demo.dto.WmsUserClientDto;
 import com.example.whb_demo.dto.WmsUserStockroomDto;
@@ -38,6 +39,7 @@ public class ExcelServiceDaoImpl implements ExcelServiceDao {
 
     @Resource
     private ExcelMapper excelMapper;
+
 
     @Override
     public List<WmsUser> repetitionRepetition(List<WmsUser> excelListl) {
@@ -152,6 +154,14 @@ public class ExcelServiceDaoImpl implements ExcelServiceDao {
 
         for (WmsUser user : userList) {
 
+            if ("该仓库全部绑定的所有客户".equals(user.getClienteleCode())){
+
+                // 查询该仓库全部绑定的所有客户
+                List<WmsUserClientDto> dtoLists = this.queryStorehouseAllClientele(user);
+                dtoList.addAll(dtoLists);
+                continue;
+            }
+
             String code = user.getClienteleCode();
 
             String str[] = code.split("、");
@@ -188,6 +198,38 @@ public class ExcelServiceDaoImpl implements ExcelServiceDao {
         }
 
         return 0;
+    }
+
+    /**
+     * 查询该仓库全部绑定的所有客户
+     * @param user
+     * @return
+     */
+    private List<WmsUserClientDto> queryStorehouseAllClientele(WmsUser user) {
+
+        List<WmsUserClientDto> dtoList = new ArrayList<>();
+
+        WmsStockroom stockroom = excelMapper.selectstockroomOne(user);
+
+        //查询绑定该仓库的所有客户
+        List<WmsBrandStockroom> brandList = excelMapper.selectbrandList(stockroom.getStockroomId(),user.getTenantId());
+
+        for (WmsBrandStockroom brandData : brandList) {
+
+            WmsUserClientDto dto = new WmsUserClientDto();
+
+            dto.setClienteleId(brandData.getClienteleId());
+            dto.setClienteleName(brandData.getClienteleName());
+            dto.setTenantId(user.getTenantId());
+            dto.setUserId(user.getUserId());
+            dto.setCreateUser(user.getCreateUser());
+            dto.setUserClientId(IdGenerator.getIdStr());
+
+            dtoList.add(dto);
+
+        }
+
+        return dtoList;
     }
 
     private int insertuserStockroomCount(List<WmsUser> userList) {

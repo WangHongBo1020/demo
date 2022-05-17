@@ -1,32 +1,52 @@
+
 server:
   port: 8080
+  address: 0.0.0.0
 
+#数据源配置###
 spring:
-  application:
-    name: spring-mybatis
-  jpa:
-    open-in-view: false
-
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    #url: jdbc:mysql:://@10.253.96.66:3306/cjwl_wms_dev
-    #url: jdbc:mysql://@10.253.96.66:3306/cjwl_wms_dev?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&useAffectedRows=true&allowMultiQueries=true
-    url: jdbc:mysql://@10.0.106.34:3306/cjwl_wms?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&useAffectedRows=true&allowMultiQueries=true
-    #url: jdbc:oracle:thin:@10.8.199.144:1521/intdbnew
+    url: jdbc:mysql://@10.253.96.66:3306/cjwl_wms_dev?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&useAffectedRows=true&allowMultiQueries=true
+    #url: jdbc:mysql://@10.0.106.34:3306/cjwl_wms?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&useAffectedRows=true&allowMultiQueries=true
     username: root
-    #password: CjK1rry1as
-    password: Qaz123$%^
+    password: CjK1rry1as
+    #password: Qaz123$%^
+    hikari:
+      auto-commit: true
+      minimum-idle: 2
+      idle-timeout: 60000
+      connection-timeout: 30000
+      max-lifetime: 1800000
+      pool-name: DatebookHikariCP
+      maximum-pool-size: 5
+#数据源配置###
 
-mybatis:
+#mybatis-plus配置###
+mybatis-plus:
+  global-config:
+    db-config:
+      id-type: input
   configuration:
-    map-underscore-to-camel-case: true
-  type-aliases-package: com.learn.springmybatis.mapper
+      log-impl: org.apache.ibatis.logging.stdout.StdOutImpl #开启sql日志
   mapper-locations: classpath:*/mapper/*.xml
+  #mybatis-plus配置###
 
 logging:
-  level:
-    com.learn.springmybatis.mapper: debug
-    com.learn.springmybatis.shenzhen.mapper: debug
+  config: classpath:logback.xml
+#logging:
+# level:
+#   com.learn.springmybatis.mapper: debug
+#   com.learn.springmybatis.shenzhen.mapper: debug
+
+
+android:
+  version: 1.0.0
+  versionName: 1.2.0
+  versionCode: 2
+  url: https://cjkj-bucket.obs.cn-north-1.myhuaweicloud.com:443/WMS%2Fapp-release.apk
+  versionSummary: xxx
+
 
 
 

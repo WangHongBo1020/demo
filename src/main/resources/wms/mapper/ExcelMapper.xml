@@ -121,5 +121,67 @@
         where clientele_name = #{code} and tenant_id = #{id} and is_deleted = '0' limit 1
     </select>
 
+    <select id="selectstockroomOne" resultType="com.example.whb_demo.entity.WmsStockroom">
+        select stockroom_id,
+       stockroom_code,
+       stockroom_name,
+       stockroom_alias,
+       business_code,
+       tenant_id,
+       region_id,
+       region_name,
+       region_code,
+       company_id,
+       stockroom_type,
+       province_id,
+       city_id,
+       area_id,
+       location_address,
+       location_latitude,
+       location_longitude,
+       sort_order,
+       is_enable,
+       is_deleted,
+       contact_name,
+       contact_phone,
+       create_user,
+       create_username,
+       create_time,
+       update_time
+    from wms_stockroom
+    where stockroom_name = #{vo.stockroomName}
+      and tenant_id = #{vo.tenantId}
+      and is_deleted = '0'
+
+    </select>
+
+    <select id="selectbrandList" resultType="com.example.whb_demo.entity.WmsBrandStockroom">
+select brand_reservoir_id,
+       tenant_id,
+       clientele_id,
+       clientele_name,
+       clientele_code,
+       clientele_category,
+       brand_id,
+       brand_name,
+       brand_code,
+       stockroom_id,
+       stockroom_name,
+       stockroom_code,
+       stockroom_partition_id,
+       stockroom_partition_name,
+       stockroom_partition_code,
+       is_deleted,
+       create_user,
+       create_username,
+       update_user,
+       create_time,
+       update_time
+    from wms_brand_stockroom
+    where stockroom_id = #{id}
+      and tenant_id = #{ids}
+      and is_deleted = '0'
+    </select>
+
 
 </mapper>

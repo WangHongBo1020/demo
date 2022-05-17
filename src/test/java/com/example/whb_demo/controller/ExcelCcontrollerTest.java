@@ -6,6 +6,7 @@ import com.example.whb_demo.utils.CheckUtil;
 import com.example.whb_demo.utils.Md5Util;
 import com.example.whb_demo.utils.VinUtil;
 import com.example.whb_demo.vo.WmsMemoryExcelVo;
+import net.sf.json.JSONArray;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -213,6 +214,7 @@ class ExcelCcontrollerTest {
         SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
         String ss = "2022-03-10 10:57:38";
         Date sss = sdf.parse(ss);
+        System.out.println("sss" + sss);
         Date date = new Date();
         Date stockroomInDate=sdf.parse(sdf.format(sss));
         date=sdf.parse(sdf.format(date));
@@ -294,7 +296,7 @@ class ExcelCcontrollerTest {
         // TODO  BeanUtils.copyProperties(a,b);
         //  BeanUtils.mcopyProperties注：如果User和UserActionForm 间存在名称不相同的属性，
         //  则BeanUtils不对这些属性进行处理，需要手动处理。例如User类里面有个StockroomName 创建时间字段，
-        //  而UserActionForm里面无此字段。BeanUtils.copyProperties()不会对此字段做任何处理。必须要自己手动处理;：
+        //  而UserActionForm里面无此字段。BeanUtils.copyProperties()不会对此字段做任何处理。必须要自己手动处理;
 
         WmsUser user = new WmsUser();
 
@@ -304,6 +306,37 @@ class ExcelCcontrollerTest {
 
         BeanUtils.copyProperties(user,wmsUser);
         System.out.println(wmsUser);
+
+    }
+
+    @Test
+    public void MapString(){
+        Map<String,String> map = new HashMap<String,String>();
+        map.put("1", "11");
+        map.put("2", "22");
+        map.put("3", "33");
+        map.put("4", "44");
+        map.put("5", "https://img0.baidu.com/it/u=2862534777,914942650&fm=253&fmt=auto&app=138&f=JPEG?w=889&h=500");
+
+        JSONArray jsonArray = JSONArray.fromObject(map);
+
+        String string = jsonArray.toString();
+        String string1 = JSONObject.toJSONString(map);
+        System.out.println(string);
+        System.out.println(string1);
+
+        JSONObject beforejson = JSONObject.parseObject(string1);
+
+        String str = beforejson.getString("5");
+        System.out.println(str);
+
+        List<String> list = new ArrayList<>();
+        list.add("https://img0.baidu.com/it/u=2862534777,914942650&fm=253&fmt=auto&app=138&f=JPEG?w=889&h=500");
+        list.add("https://img0.baidu.com/it/u=2862534777,914942650&fm=253&fmt=auto&app=138&f=JPEG?w=889&h=500");
+        System.out.println(list);
+
+        String stri = JSONObject.toJSONString(list);
+        System.out.println(stri);
     }
 
 }

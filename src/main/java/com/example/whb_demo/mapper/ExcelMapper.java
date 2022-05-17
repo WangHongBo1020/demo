@@ -16,6 +16,7 @@ import java.util.List;
  * \* Time: 15:24
  * \* Description:
  * \
+ * @author Administrator
  */
 @Mapper
 public interface ExcelMapper {
@@ -47,4 +48,7 @@ public interface ExcelMapper {
 
     int insertWmsUserClient(@Param("list") List<WmsUserClientDto> dtoList);
 
+    WmsStockroom selectstockroomOne(@Param("vo") WmsUser user);
+
+    List<WmsBrandStockroom> selectbrandList(@Param("id") String stockroomId, @Param("ids") String tenantId);
 }

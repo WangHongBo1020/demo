@@ -27,4 +27,6 @@ public interface ExclService {
      */
     String insertMemoryData(MultipartFile file) throws Exception;
 
+    String ceshi();
+
 }

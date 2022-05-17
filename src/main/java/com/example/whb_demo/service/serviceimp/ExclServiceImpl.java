@@ -1,10 +1,13 @@
 package com.example.whb_demo.service.serviceimp;
 
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.example.whb_demo.dao.ExcelServiceDao;
+import com.example.whb_demo.entity.WmsStockroom;
 import com.example.whb_demo.entity.WmsStockroomMemory;
 import com.example.whb_demo.entity.WmsUser;
 import com.example.whb_demo.mapper.ExcelMapper;
+import com.example.whb_demo.mapper.WmsStockroomMapper;
 import com.example.whb_demo.service.ExclService;
 import com.example.whb_demo.utils.ExcelUtil;
 import com.example.whb_demo.vo.WmsMemoryExcelVo;
@@ -37,6 +40,9 @@ public class ExclServiceImpl implements ExclService {
 
     @Resource
     private ExcelMapper excelMapper;
+
+    @Resource
+    private WmsStockroomMapper wmsStockroomMapper;
 
     @Override
     public String insertData(MultipartFile file) throws Exception {
@@ -194,6 +200,15 @@ public class ExclServiceImpl implements ExclService {
         } catch (Exception e) {
             log.info("批量插入库存明细表数据异常:{}", JSONObject.toJSONString(memoryList), e);
         }
+
+        return null;
+    }
+
+    @Override
+    public String ceshi() {
+
+        WmsStockroom stockroom = wmsStockroomMapper.selectOne(new LambdaQueryWrapper<WmsStockroom>()
+                .eq(WmsStockroom::getStockroomCode,1));
 
         return null;
     }
