@@ -2,12 +2,16 @@ package com.example.whb_demo.service.serviceimp;
 
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.example.whb_demo.dao.ExcelServiceDao;
 import com.example.whb_demo.entity.WmsStockroom;
 import com.example.whb_demo.entity.WmsStockroomMemory;
+import com.example.whb_demo.entity.WmsStockroomOutDetails;
 import com.example.whb_demo.entity.WmsUser;
 import com.example.whb_demo.mapper.ExcelMapper;
 import com.example.whb_demo.mapper.WmsStockroomMapper;
+import com.example.whb_demo.mapper.WmsStockroomMemoryMapper;
+import com.example.whb_demo.mapper.WmsStockroomOutDetailsMapper;
 import com.example.whb_demo.service.ExclService;
 import com.example.whb_demo.utils.ExcelUtil;
 import com.example.whb_demo.vo.WmsMemoryExcelVo;
@@ -18,9 +22,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -43,6 +47,11 @@ public class ExclServiceImpl implements ExclService {
 
     @Resource
     private WmsStockroomMapper wmsStockroomMapper;
+
+    @Resource
+    private WmsStockroomMemoryMapper wmsStockroomMemoryMapper;
+    @Resource
+    private WmsStockroomOutDetailsMapper wmsStockroomOutDetailsMapper;
 
     @Override
     public String insertData(MultipartFile file) throws Exception {
@@ -210,6 +219,53 @@ public class ExclServiceImpl implements ExclService {
         WmsStockroom stockroom = wmsStockroomMapper.selectOne(new LambdaQueryWrapper<WmsStockroom>()
                 .eq(WmsStockroom::getStockroomCode,1));
 
+
+        List<WmsStockroomMemory> memory = wmsStockroomMemoryMapper.selectList(new LambdaQueryWrapper<WmsStockroomMemory>()
+                .eq(WmsStockroomMemory::getStockroomOutCode, "OUTK13202205170001"));
+
+        List<WmsStockroomOutDetails> details = wmsStockroomOutDetailsMapper.selectList(new LambdaQueryWrapper<WmsStockroomOutDetails>()
+                .eq(WmsStockroomOutDetails::getStockroomOutNo, "OUTK13202205170001"));
+
+        for (WmsStockroomMemory men : memory) {
+
+            for (WmsStockroomOutDetails detail : details) {
+
+                if (men.getVin().equals(detail.getVin())){
+
+                    SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
+
+
+                    Date smdate = null;
+                    Date bdate = null;
+                    try {
+                        smdate = sdf.parse(sdf.format(detail.getEalityTiime()));
+                        bdate =sdf.parse(sdf.format(men.getStockroomInDate()));
+
+                        Calendar cal = Calendar.getInstance();
+                        cal.setTime(smdate);
+
+                        long time1 = cal.getTimeInMillis();
+
+                        cal.setTime(bdate);
+                        long time2 = cal.getTimeInMillis();
+                        long datay=(time1-time2)/(1000*3600*24);
+
+                        int stockroomMemory = wmsStockroomMemoryMapper.update(null,new LambdaUpdateWrapper<WmsStockroomMemory>()
+                            .set(WmsStockroomMemory::getStockroomMemoryDays,String.valueOf(datay))
+                                .set(WmsStockroomMemory::getStockroomOutDate,detail.getEalityTiime())
+                        .eq(WmsStockroomMemory::getVin,men.getVin())
+                        .eq(WmsStockroomMemory::getStockroomOutCode,"OUTK13202205170001"));
+
+
+                        System.out.println(stockroomMemory);
+
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+            }
+        }
         return null;
     }
 }

@@ -98,6 +98,7 @@ public class WmsMemoryExcelVo {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @JsonFormat(pattern = "yyyy-MM-dd")
     private Date stockroomInDate;
+    //private String stockroomInDate;
 
     /**
      * 在库天数

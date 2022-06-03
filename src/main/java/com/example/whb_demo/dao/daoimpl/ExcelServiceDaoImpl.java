@@ -468,8 +468,9 @@ public class ExcelServiceDaoImpl implements ExcelServiceDao {
                 } else{
                     memory.setVehicleColor("");
                 }
-
+                SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
                 memory.setStockroomInDate(excelVo.getStockroomInDate());
+                //memory.setStockroomInDate(sdf.parse(excelVo.getStockroomInDate()));
                 memory.setKeyAmount(excelVo.getKeyAmount());
                 memory.setFollowDescribe(excelVo.getFollowDescribe());
                 memory.setVehicleNumber(excelVo.getVehicleNumber());
@@ -480,6 +481,7 @@ public class ExcelServiceDaoImpl implements ExcelServiceDao {
                     memory.setStockroomMemoryDays(excelVo.getStockroomMemoryDays());
                 } else {
                     memory.setStockroomMemoryDays(meMoryDays(excelVo.getStockroomInDate()));
+                    //memory.setStockroomMemoryDays(meMoryDays(sdf.parse(excelVo.getStockroomInDate())));
                 }
 
                 if (StringUtils.isNotBlank(excelVo.getFollowBackups())) {

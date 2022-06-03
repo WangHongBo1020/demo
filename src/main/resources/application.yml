@@ -7,11 +7,11 @@ server:
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://@10.253.96.66:3306/cjwl_wms_dev?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&useAffectedRows=true&allowMultiQueries=true
-    #url: jdbc:mysql://@10.0.106.34:3306/cjwl_wms?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&useAffectedRows=true&allowMultiQueries=true
+    #url: jdbc:mysql://@10.253.96.66:3306/cjwl_wms_dev?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&useAffectedRows=true&allowMultiQueries=true
+    url: jdbc:mysql://@10.0.106.34:3306/cjwl_wms?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&useAffectedRows=true&allowMultiQueries=true
     username: root
-    password: CjK1rry1as
-    #password: Qaz123$%^
+    #password: CjK1rry1as
+    password: Qaz123$%^
     hikari:
       auto-commit: true
       minimum-idle: 2

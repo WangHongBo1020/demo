@@ -261,6 +261,11 @@ class ExcelCcontrollerTest {
         int[] array = new int[]{5,8,6,3,9,2,1,7};
         sort(array);
         System.out.println(Arrays.toString(array));
+
+        String currentTime = new SimpleDateFormat("yyyy-MM-dd").format(1652976000000L);
+
+        System.out.println(currentTime);
+
     }
 
 
@@ -307,6 +312,77 @@ class ExcelCcontrollerTest {
         BeanUtils.copyProperties(user,wmsUser);
         System.out.println(wmsUser);
 
+
+        List<WmsUser> list = new ArrayList<>();
+        List<WmsUser> list1 = new ArrayList<>();
+        WmsUser user1 = new WmsUser();
+        WmsUser user2 = new WmsUser();
+        WmsUser user3 = new WmsUser();
+        WmsUser user4 = new WmsUser();
+        WmsUser user6 = new WmsUser();
+
+        user1.setStockroomName("12333");
+        user2.setStockroomName("12334");
+
+        user3.setStockroomName("12335");
+        user4.setStockroomName("12336");
+        user6.setStockroomName("12333");
+
+
+        list.add(user1);
+        list.add(user2);
+
+        list1.add(user3);
+        list1.add(user4);
+        list1.add(user6);
+
+        List<WmsUser> filterList = list1.stream().filter(a -> !list.contains(a))
+                .collect(Collectors.toList());
+
+
+        List<WmsUser> filterList1 = list1.stream().filter(a -> !list.contains(a))
+                .collect(Collectors.toList());
+
+
+        System.out.println("filterList:++++++" + JSONObject.toJSONString(filterList));
+
+        /*List<String> reduce = list2.stream().filter(item -> !list1.contains(item)).collect(toList());*/
+        List<WmsUser> list2 = new ArrayList<>();
+
+       /* list2 = list.stream().map(e -> {
+            WmsUser user3 = new WmsUser();
+
+            BeanUtils.copyProperties(e, user3);
+            return user3;
+        }).collect(Collectors.toList());
+
+        list2 = list1.stream().map(e -> {
+            WmsUser user3 = new WmsUser();
+
+            BeanUtils.copyProperties(e, user3);
+            return user3;
+        }).collect(Collectors.toList());
+
+        //只输出了list1
+        System.out.println("1111" + list2);*/
+
+        list2 = list.stream().map(e -> {
+            WmsUser user5 = new WmsUser();
+
+            BeanUtils.copyProperties(e, user5);
+            return user5;
+        }).collect(Collectors.toList());
+
+        list2.addAll(list1);
+
+        List<WmsUser> deleteAccount = list2.stream().collect(Collectors.collectingAndThen
+                (Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing
+                        (WmsUser::getStockroomName))), ArrayList::new));
+
+/*
+        System.out.println("1111" + deleteAccount);
+*/
+
     }
 
     @Test
@@ -337,6 +413,92 @@ class ExcelCcontrollerTest {
 
         String stri = JSONObject.toJSONString(list);
         System.out.println(stri);
+    }
+
+
+    @Test
+    public void haomiaozhuanhuan () {
+
+        Calendar calendar = Calendar.getInstance();
+
+        String string = "1649210283057";
+
+        Long s = Long.valueOf(string);
+
+        if (calendar.getTimeInMillis() == s){
+
+            System.out.println("666666666666666");
+        }
+        System.out.println(s);
+        Date date = new Date(s);
+        java.text.SimpleDateFormat f = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String timestring = f.format(date);
+
+        System.out.println(timestring);
+    }
+
+    @Test
+    public void streamFilter(){
+
+        List<WmsUser> list = new ArrayList<>();
+        WmsUser user1 = new WmsUser();
+        WmsUser user2 = new WmsUser();
+        WmsUser user3 = new WmsUser();
+        WmsUser user4 = new WmsUser();
+        WmsUser user6 = new WmsUser();
+        user1.setMain(1);
+        user2.setMain(2);
+        user3.setMain(3);
+        user4.setMain(4);
+        user6.setMain(5);
+
+        user1.setStockroomName("12333");
+        user2.setStockroomName("12334");
+
+        user3.setStockroomName("12335");
+        user4.setStockroomName("12336");
+        user6.setStockroomName("12333");
+
+        user1.setIdNumber("12333");
+        user2.setIdNumber("12334");
+
+        user3.setIdNumber("12335");
+        user4.setIdNumber("12336");
+        user6.setIdNumber("12333");
+
+        list.add(user1);
+        list.add(user2);
+        list.add(user3);
+        list.add(user4);
+        list.add(user6);
+        List<WmsUser> list1 = new ArrayList<>();
+
+        list1.addAll(list);
+        List<WmsUser> list2 = new ArrayList<>();
+        for (int i = 0; i <list.size()-1; i++) {
+
+            for (int j = list.size() - 1; j > i; j--) {
+
+                if(list.get(i).getStockroomName().equals(list.get(j).getStockroomName())
+                    && list.get(i).getIdNumber().equals(list.get(j).getIdNumber())){
+                    /*WmsUser user = new WmsUser();
+
+                    BeanUtils.copyProperties(list.get(j),user);
+                    *//*user.setStockroomName(list.get(i).getStockroomName());*//*
+                    user.setMain(list.get(j).getMain() + list.get(i).getMain());
+                    list2.add(user);*/
+                    list.get(i).setMain(list.get(j).getMain() + list.get(i).getMain());
+                    list.remove(j);
+
+                }
+
+            }
+        }
+
+        System.out.println(JSONObject.toJSONString(list));
+
+        /*List<WmsUser> filterList = list.stream().filter(a -> !list.contains(a))
+                .collect(Collectors.toList());*/
     }
 
 }
