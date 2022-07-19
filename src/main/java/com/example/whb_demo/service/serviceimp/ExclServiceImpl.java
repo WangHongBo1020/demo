@@ -4,14 +4,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.example.whb_demo.dao.ExcelServiceDao;
-import com.example.whb_demo.entity.WmsStockroom;
-import com.example.whb_demo.entity.WmsStockroomMemory;
-import com.example.whb_demo.entity.WmsStockroomOutDetails;
-import com.example.whb_demo.entity.WmsUser;
-import com.example.whb_demo.mapper.ExcelMapper;
-import com.example.whb_demo.mapper.WmsStockroomMapper;
-import com.example.whb_demo.mapper.WmsStockroomMemoryMapper;
-import com.example.whb_demo.mapper.WmsStockroomOutDetailsMapper;
+import com.example.whb_demo.entity.*;
+import com.example.whb_demo.mapper.*;
 import com.example.whb_demo.service.ExclService;
 import com.example.whb_demo.utils.ExcelUtil;
 import com.example.whb_demo.vo.WmsMemoryExcelVo;
@@ -52,6 +46,9 @@ public class ExclServiceImpl implements ExclService {
     private WmsStockroomMemoryMapper wmsStockroomMemoryMapper;
     @Resource
     private WmsStockroomOutDetailsMapper wmsStockroomOutDetailsMapper;
+
+    @Resource
+    private WmsStockroomPositionMapper wmsStockroomPositionMapper;
 
     @Override
     public String insertData(MultipartFile file) throws Exception {
@@ -203,7 +200,10 @@ public class ExclServiceImpl implements ExclService {
         try {
 
             int count = excelMapper.insertmemoryData(repetition);
-
+            //把所有库位变成占用
+            wmsStockroomPositionMapper.update(null, new LambdaUpdateWrapper<WmsStockroomPosition>()
+                    .set(WmsStockroomPosition::getPositionStatus, 1)
+                    .in(WmsStockroomPosition::getPositionId, repetition.stream().map(WmsStockroomMemory::getStockroomPositionId).collect(Collectors.toList())));
             return count > 0 ? "0" : null;
 
         } catch (Exception e) {

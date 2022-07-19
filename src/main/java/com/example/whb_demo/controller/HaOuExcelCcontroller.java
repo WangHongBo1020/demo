@@ -2,9 +2,8 @@ package com.example.whb_demo.controller;
 
 import com.example.whb_demo.dto.WmsStockroomMemoryDto;
 import com.example.whb_demo.dto.WmsUserDto;
-import com.example.whb_demo.entity.WmsStockroom;
-import com.example.whb_demo.entity.WmsUser;
 import com.example.whb_demo.service.ExclService;
+import com.example.whb_demo.service.HaOuExcelService;
 import com.example.whb_demo.utils.Result;
 import io.swagger.annotations.ApiOperation;
 import jdk.nashorn.internal.ir.annotations.Ignore;
@@ -26,28 +25,18 @@ import javax.annotation.Resource;
  */
 @Slf4j
 @RestController
-@RequestMapping("/whb")
-public class ExcelCcontroller {
+@RequestMapping("/haou")
+public class HaOuExcelCcontroller {
 
     @Resource
-    private ExclService exclService;
+    private HaOuExcelService haOuExcelService;
 
-    @ApiOperation(value = "创建账户")
-    @PostMapping("/wmsusers")
+    @ApiOperation(value = "哈欧数据发运统计数据清洗更新")
+    @PostMapping("/haoufayun")
     public Result<WmsUserDto, Object> saveUser(@RequestParam("file") @Ignore MultipartFile file) throws Exception {
 
         Assert.notNull(file,"Eexecl不能为空");
-        String result = exclService.insertData(file);
-
-        return "0".equals(result) ? Result.succeed(result) : Result.failed(result);
-    }
-
-    @ApiOperation(value = "创建库存")
-    @PostMapping("/insertmemory")
-    public Result<WmsStockroomMemoryDto, Object> insertmemory(@RequestBody MultipartFile file) throws Exception {
-
-        Assert.notNull(file,"Eexecl不能为空");
-        String result = exclService.insertMemoryData(file);
+        String result = haOuExcelService.updataData(file);
 
         return "0".equals(result) ? Result.succeed(result) : Result.failed(result);
     }

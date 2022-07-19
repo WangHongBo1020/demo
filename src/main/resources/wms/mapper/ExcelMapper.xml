@@ -103,6 +103,8 @@
         where partition_name = #{vo.stockroomPartitionName}
         and position_code = #{vo.stockroomPositionCode}
         and stockroom_id = #{stockroomId}
+        and position_status = '0'
+        and is_deleted = '0'
     </select>
 
     <select id="queryStockroom" resultType="com.example.whb_demo.entity.WmsStockroom">

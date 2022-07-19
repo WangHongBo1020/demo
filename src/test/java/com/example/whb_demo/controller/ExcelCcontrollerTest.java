@@ -7,6 +7,7 @@ import com.example.whb_demo.utils.Md5Util;
 import com.example.whb_demo.utils.VinUtil;
 import com.example.whb_demo.vo.WmsMemoryExcelVo;
 import net.sf.json.JSONArray;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -20,6 +21,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import javax.annotation.Resource;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -499,6 +501,16 @@ class ExcelCcontrollerTest {
 
         /*List<WmsUser> filterList = list.stream().filter(a -> !list.contains(a))
                 .collect(Collectors.toList());*/
+    }
+
+    @Test
+    public void BigDecimaldivide(){
+        BigDecimal amount = BigDecimal.valueOf(834.52);
+        BigDecimal rate = new BigDecimal(0);
+        rate =  BigDecimal.valueOf(6.7898);
+        amount =  amount.divide(rate,2,BigDecimal.ROUND_HALF_UP);
+
+        System.out.println(amount);
     }
 
 }

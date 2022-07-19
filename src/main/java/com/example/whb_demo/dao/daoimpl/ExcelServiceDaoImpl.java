@@ -412,7 +412,7 @@ public class ExcelServiceDaoImpl implements ExcelServiceDao {
                     }
 
                 } else {
-                    errorList.add(index + "行：" + excelVo.getStockroomPartitionName() + " 不存在");
+                    errorList.add(index + "行：" + excelVo.getStockroomPartitionName() + " 不存在/被占用");
                 }
 
                 //根据客户名称，品牌名称查询对应的id
@@ -435,11 +435,11 @@ public class ExcelServiceDaoImpl implements ExcelServiceDao {
                         errorList.add(index + "行：" + excelVo.getBrandName() + " 品牌不存在");
                     }
 
-                    if (StringUtils.isNotBlank(clienteleBrandid.getBrandCode())) {
+                   /* if (StringUtils.isNotBlank(clienteleBrandid.getBrandCode())) {
                         memory.setBrandCode(clienteleBrandid.getBrandCode());
                     } else {
                         errorList.add(index + "行：" + excelVo.getBrandName() + " 品牌编码不存在");
-                    }
+                    }*/
 
                 } else {
                     errorList.add(index + "行：" + excelVo.getClienteleName() + " 客户不存在、"
