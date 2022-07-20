@@ -18,6 +18,8 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -201,8 +203,10 @@ public class ExclServiceImpl implements ExclService {
 
             int count = excelMapper.insertmemoryData(repetition);
             //把所有库位变成占用
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
             wmsStockroomPositionMapper.update(null, new LambdaUpdateWrapper<WmsStockroomPosition>()
                     .set(WmsStockroomPosition::getPositionStatus, 1)
+                    .set(WmsStockroomPosition::getUpdateTime, LocalDateTime.now().format(formatter))
                     .in(WmsStockroomPosition::getPositionId, repetition.stream().map(WmsStockroomMemory::getStockroomPositionId).collect(Collectors.toList())));
             return count > 0 ? "0" : null;
 
