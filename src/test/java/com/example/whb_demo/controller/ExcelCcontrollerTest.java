@@ -2,6 +2,7 @@ package com.example.whb_demo.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.example.whb_demo.entity.WmsUser;
+import com.example.whb_demo.utils.Asserts;
 import com.example.whb_demo.utils.CheckUtil;
 import com.example.whb_demo.utils.Md5Util;
 import com.example.whb_demo.utils.VinUtil;
@@ -489,7 +490,7 @@ class ExcelCcontrollerTest {
                     *//*user.setStockroomName(list.get(i).getStockroomName());*//*
                     user.setMain(list.get(j).getMain() + list.get(i).getMain());
                     list2.add(user);*/
-                    list.get(i).setMain(list.get(j).getMain() + list.get(i).getMain());
+                    list.get(i).setMain(list.get(j).getMain()+ list.get(i).getMain());
                     list.remove(j);
 
                 }
@@ -511,6 +512,70 @@ class ExcelCcontrollerTest {
         amount =  amount.divide(rate,2,BigDecimal.ROUND_HALF_UP);
 
         System.out.println(amount);
+    }
+
+
+    @Test
+    public void Listnull(){
+        List<WmsUser> wmsUsers = new ArrayList<>();
+        List<WmsUser> wmsUsers1 = new ArrayList<>();
+
+        WmsUser wmsUser = new WmsUser();
+
+        wmsUser.setStockroomName("sdsd");
+
+        wmsUsers.add(wmsUser);
+
+        wmsUsers = wmsUsers1.stream().map(e -> {
+            WmsUser wms = new WmsUser();
+            BeanUtils.copyProperties(e,wms);
+            return wms;
+        }).collect(Collectors.toList());
+
+        System.out.println(JSONObject.toJSONString(wmsUsers));
+
+
+        Object obj1 = 666;
+        Object obj2 = 6677;
+        obj1 = obj2;
+        System.out.println(obj1);
+
+        long startTime=System.nanoTime();
+
+        //下面是一些测试代码
+        for(int i=0;i<10000;i++){
+            System.out.println("当前是："+i);
+
+        }
+
+        long endTime=System.nanoTime();
+
+        System.out.println("当前程序耗时："+(endTime-startTime)+"ns");
+
+    }
+
+    @Test
+    public void ceshi(){
+
+        String a = "1";
+        String b = "2";
+        String c = "3";
+        String d = "4";
+
+        if ((a.equals("2") && b.equals("2")) || (c.equals("3") && d.equals("4"))){
+
+            System.out.println("chengong");
+        }
+    }
+
+
+    @Test
+    public void duanyan(){
+        /*WmsUser user = new WmsUser();
+        Asserts.assertNotBlank(user.getUserId(), "库位与客户无绑定关系");*/
+
+        int count = 1;
+        Asserts.assertTrue(count == 0, "库位与客户无绑定关系");
     }
 
 

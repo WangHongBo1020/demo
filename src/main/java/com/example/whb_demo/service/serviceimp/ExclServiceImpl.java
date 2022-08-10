@@ -52,6 +52,9 @@ public class ExclServiceImpl implements ExclService {
     @Resource
     private WmsStockroomPositionMapper wmsStockroomPositionMapper;
 
+    @Resource
+    private WmsUserMapper wmsUserMapper;
+
     @Override
     public String insertData(MultipartFile file) throws Exception {
 
@@ -94,6 +97,16 @@ public class ExclServiceImpl implements ExclService {
             if (userList != null && !userList.isEmpty()) {
 
                 List<WmsUser> repetition = excelServiceDao.repetitionRepetition(userList);
+
+                //根据账户查询是否已存在
+                List<WmsUser> existId = wmsUserMapper.selectList(new LambdaQueryWrapper<WmsUser>()
+                        .eq(WmsUser::getDeleted,0)
+                        .eq(WmsUser::getEnabled,1)
+                        .in(WmsUser::getUsername,repetition.stream().map(WmsUser::getUsername).collect(Collectors.toList())));
+
+                if (existId != null && !existId.isEmpty()){
+                    return JSONObject.toJSONString(existId) + "账户存在请检查。";
+                }
 
                 //向wms_user表插入数据
                 int count = excelMapper.insertuserData(repetition);
