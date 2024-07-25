@@ -1,5 +1,8 @@
 package com.example.whb_demo.service.serviceimp;
 
+import com.alibaba.excel.EasyExcel;
+import com.alibaba.excel.ExcelWriter;
+import com.alibaba.excel.metadata.Sheet;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
@@ -8,14 +11,17 @@ import com.example.whb_demo.entity.*;
 import com.example.whb_demo.mapper.*;
 import com.example.whb_demo.service.ExclService;
 import com.example.whb_demo.utils.ExcelUtil;
+import com.example.whb_demo.vo.RateDetailOaStagingExcelVo;
 import com.example.whb_demo.vo.WmsMemoryExcelVo;
 import com.example.whb_demo.vo.WmsUserExcelVo;
+import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -282,6 +288,51 @@ public class ExclServiceImpl implements ExclService {
                 }
 
             }
+        }
+        return null;
+    }
+
+    @Override
+    public List<RateDetailOaStagingExcelVo> oaBmsExcel(MultipartFile file, HttpServletResponse response) {
+        try {
+            List<RateDetailOaStagingExcelVo> excelList = ExcelUtil.importExcel(file, 0, 1, RateDetailOaStagingExcelVo.class);
+            //List<RateDetailOaStaging> findDuolicates = excelList.stream()
+            //        .filter(e -> Collections.frequency(excelList, e) > 1)
+            //        .distinct()
+            //        .collect(Collectors.toList());
+            //if (!CollectionUtils.isEmpty(findDuolicates)) {
+            //    List<RateDetailOaStaging> list = Lists.newArrayList();
+            //
+            //    list.addAll(findDuolicates);
+            //
+            //    System.out.println(String.format("oaBmsExcel->list: %s",JSONObject.toJSONString(list)));
+            //}
+            List<RateDetailOaStagingExcelVo> excelDataList = excelList.stream().collect(Collectors.collectingAndThen
+                    (Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing
+                            (r -> r.getBrandCode() + r.getBrandName() + r.getAttribute006() + r.getAttribute007()
+                                    + r.getAttribute002() + r.getAttribute003() + r.getAttribute004()
+                                    + r.getAttribute005() + r.getAttributeNumber2() + r.getAttributeNumber1()
+                                    + r.getAttributeNumber3() + r.getAttributeNumber4()
+                                    + r.getAttributeDate1() + r.getAttributeDate2()
+                             ))), ArrayList::new));
+            String fileName = "费率明细.xlsx";
+            try {
+                File files = new File("/Users/wanghongbo/Desktop/sql/费率明细.xlsx");
+                if (!files.exists()) {
+                    files.createNewFile();
+                }
+                //ExcelWriter excelWriter = EasyExcel.write(files).build();
+                EasyExcel.write(files.getAbsolutePath(), RateDetailOaStagingExcelVo.class).sheet("费率信息").doWrite(excelDataList);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            //List<RateDetailOaStagingExcelVo> returnList = Lists.newArrayList();
+            //RateDetailOaStagingExcelVo vo = new RateDetailOaStagingExcelVo();
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return null;
     }

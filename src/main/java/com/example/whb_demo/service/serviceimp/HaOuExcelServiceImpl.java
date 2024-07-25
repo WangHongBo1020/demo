@@ -40,12 +40,12 @@ public class HaOuExcelServiceImpl implements HaOuExcelService {
 
                 if (StringUtils.isNotBlank(excelVo.getBookingNo()) &&
                         StringUtils.isNotBlank(excelVo.getContainerNum()) &&
-                        StringUtils.isNotBlank(excelVo.getRate()) /*&&
-                        StringUtils.isNotBlank(excelVo.getSingleContainerSubsidyAmount())*/) {
+                        StringUtils.isNotBlank(excelVo.getRate()) &&
+                        StringUtils.isNotBlank(excelVo.getSingleContainerSubsidyAmount())) {
 
                     int count = haOuExcelMapper.update(null,new LambdaUpdateWrapper<LedgerDetail>()
                             .set(LedgerDetail::getRate,excelVo.getRate())
-                            /*.set(LedgerDetail::getSingleContainerSubsidyAmount,excelVo.getSingleContainerSubsidyAmount())*/
+                            .set(LedgerDetail::getSingleContainerSubsidyAmount,excelVo.getSingleContainerSubsidyAmount())
                             .eq(LedgerDetail::getBookingNo,excelVo.getBookingNo())
                             .eq(LedgerDetail::getContainerNum,excelVo.getContainerNum()));
 

@@ -36,7 +36,7 @@ public class WmsUserExcelVo {
     @Excel(name = "分配仓库名称(多个仓库以顿号、分割)",orderNum = "5", width = 20)
     private String stockroomName;
 
-    @Excel(name = "分配客户编码(多个客户以顿号、分割)",orderNum = "6", width = 20)
+    @Excel(name = "分配客户名称(多个客户以顿号、分割)",orderNum = "6", width = 20)
     private String clienteleCode;
 
     @Excel(name = "备注",orderNum = "7", width = 20)

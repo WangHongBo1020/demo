@@ -1,11 +1,12 @@
 package com.example.whb_demo.utils;
 
 
+import com.baomidou.mybatisplus.core.toolkit.Assert;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
+import com.baomidou.mybatisplus.core.toolkit.SystemClock;
 import lombok.extern.slf4j.Slf4j;
-import cn.hutool.core.date.SystemClock;
-import cn.hutool.core.lang.Assert;
-import cn.hutool.core.util.StrUtil;
+
 
 import java.lang.management.ManagementFactory;
 import java.net.InetAddress;
@@ -108,7 +109,7 @@ public class Sequence {
         StringBuilder mpid = new StringBuilder();
         mpid.append(datacenterId);
         String name = ManagementFactory.getRuntimeMXBean().getName();
-        if (StrUtil.isNotEmpty(name)) {
+        if (StringUtils.isNotEmpty(name)) {
             /*
              * GET jvmPid
              */

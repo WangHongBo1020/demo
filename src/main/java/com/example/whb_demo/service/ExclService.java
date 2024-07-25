@@ -1,7 +1,11 @@
 package com.example.whb_demo.service;
 
 
+import com.example.whb_demo.vo.RateDetailOaStagingExcelVo;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 /**
  * \* KDA
@@ -28,5 +32,7 @@ public interface ExclService {
     String insertMemoryData(MultipartFile file) throws Exception;
 
     String ceshi();
+
+    List<RateDetailOaStagingExcelVo> oaBmsExcel(MultipartFile file, HttpServletResponse response);
 
 }

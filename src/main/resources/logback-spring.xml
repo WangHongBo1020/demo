@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
 	<!--定义日志文件的存储地址 勿在 LogBack 的配置中使用相对路径-->
-	<substitutionProperty name="logbase" value="./logs" />
+	<substitutionProperty name="LOG_HOME" value="../logs/" />
 	<!-- 这个是要配置输出文件的 -->
 	<jmxConfigurator />
 	<!-- 控制台输出 -->
@@ -15,11 +15,16 @@
 	<appender name="logfile" class="ch.qos.logback.core.rolling.RollingFileAppender">
 		<!--<Encoding>UTF-8</Encoding>-->
 		<!--<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">-->
+		<!--滚动策略按照时间滚动-->
 		<rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
 			<!--<File>${logbase}/mid-dst-oms.%d{yyyy-MM-dd}.log</File>-->
 			<FileNamePattern>${logbase}/exflow.%d{yyyy-MM-dd}.%i.log</FileNamePattern>
+
+			<!--日志文件保留天数-->
 			<MaxHistory>20</MaxHistory>
+			<!--用来指定日志文件的上限大小，到了这个值就会删除旧日志-->
 			<totalSizeCap>2GB</totalSizeCap>
+			<!--单个文件大小-->
 			<MaxFileSize>20MB</MaxFileSize>
 		</rollingPolicy>
 		<!--<triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">-->

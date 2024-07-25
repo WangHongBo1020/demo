@@ -96,6 +96,7 @@ public class WmsUser implements Serializable {
     @ApiModelProperty("角色ID")
     private String roleId;
 
+    @TableField(exist = false)
     private String wmsRoleId;
 
     @TableField(exist = false)

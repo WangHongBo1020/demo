@@ -7,12 +7,13 @@ server:
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://@10.253.96.66:3306/cjwl_wms_dev?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&useAffectedRows=true&allowMultiQueries=true
+    #url: jdbc:mysql://@10.253.96.66:3306/cjwl_wms_test?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&useAffectedRows=true&allowMultiQueries=true
     #url: jdbc:mysql://@10.0.106.34:3306/cjwl_wms?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&useAffectedRows=true&allowMultiQueries=true
+    url: jdbc:mysql://127.0.0.1:3306/bendi?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8&useSSL=false
     #哈欧数据源
     #url: jdbc:mysql://@124.70.103.156:8306/hao?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8&useSSL=false
     username: root
-    password: CjK1rry1as
+    password: 47C5801254D189CE8BC33E8FFE5E67D1
     #password: Qaz123$%^
     #哈欧数据源密码
     #password: HaohwDB321$
@@ -24,6 +25,7 @@ spring:
       max-lifetime: 1800000
       pool-name: DatebookHikariCP
       maximum-pool-size: 5
+
 #数据源配置###
 
 #mybatis-plus配置###
@@ -37,7 +39,7 @@ mybatis-plus:
   #mybatis-plus配置###
 
 logging:
-  config: classpath:logback.xml
+config: classpath:logback-spring.xml
 #logging:
 # level:
 #   com.learn.springmybatis.mapper: debug
